@@ -1,0 +1,16 @@
+<mjml>
+  <mj-body background-color="#fafbfc">
+    <mj-section background-color="#fff" padding="40px 20px">
+      <mj-column vertical-align="middle" width="100%">
+        <mj-text align="center" padding="35px" font-size="20px" color="#333">Hello {{ name }}</mj-text>
+        <mj-text align="center" font-size="16px" padding-left="25px" padding-right="25px" font-family="Arial, Helvetica, sans-serif" color="#555">{{ invitor name }} has invited you to join on the {{ team_name }} team</mj-text>
+        <mj-text align="center" font-size="16px" padding-left="25px" padding-right="25px" font-family="Arial, Helvetica, sans-serif" color="#555">This invitation will expire after 7 days.</mj-text>
+        <mj-button align="center" font-size="18px" background-color="#009688" border-radius="8px" color="#fff" href="{{ link }}" padding="15px 30px">View Invitation</mj-button>
+        <mj-divider border-color="#ccc" border-width="2px"></mj-divider>
+        <mj-text align="center" font-size="14px" color="#777">If you didn't expect this invitation, you can safely ignore this email.</mj-text>
+        <mj-divider border-color="#ccc" border-width="2px"></mj-divider>
+        <mj-text align="center">Powered by Viot</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
