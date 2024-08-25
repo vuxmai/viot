@@ -41,7 +41,7 @@ class BasePagingDto(BaseOutDto, Generic[TPagingModel]):
     page: int
     items_per_page: int
 
-    @computed_field
+    @computed_field  # type: ignore
     @property
     def total_pages(self) -> int:
         return ceil(self.total_items / self.items_per_page)

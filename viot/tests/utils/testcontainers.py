@@ -7,7 +7,7 @@ from testcontainers.redis import AsyncRedisContainer  # type: ignore
 
 
 class FixedPostgresContainer(PostgresContainer):
-    def _shares_network(self):
+    def _shares_network(self) -> bool:
         host = self.get_docker_client().host()
         gateway_ip = self.get_docker_client().gateway_ip(self._container.id)  # type: ignore
 
@@ -25,7 +25,7 @@ class FixedPostgresContainer(PostgresContainer):
 
 
 class FixedAsyncRedisContainer(AsyncRedisContainer):
-    def _shares_network(self):
+    def _shares_network(self) -> bool:
         host = self.get_docker_client().host()
         gateway_ip = self.get_docker_client().gateway_ip(self._container.id)  # type: ignore
 

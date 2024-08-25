@@ -58,14 +58,14 @@ def test_filter() -> None:
         ("isnotnull", None, "products.id IS NOT NULL"),
     ],
 )
-def test_filter_apply(operator: FilterOperator, value: Any, expected: str):
+def test_filter_apply(operator: FilterOperator, value: Any, expected: str) -> None:
     field = "id" if operator not in ["like", "nlike", "ilike", "nilike"] else "name"
     filter = Filter(field, operator, value)
     result = filter.apply(ProductTest)
     assert str(result) == expected
 
 
-def test_filter_apply_unsupported_operator():
+def test_filter_apply_unsupported_operator() -> None:
     with pytest.raises(ValueError, match="Unsupported operator: invalid_op"):
         Filter("id", "invalid_op", 5).apply(ProductTest)  # type: ignore
 

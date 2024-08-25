@@ -15,7 +15,7 @@ class TeamInvitationCreateDto(BaseInDto):
     role: TeamRole
 
     @field_validator("role", mode="before")
-    def validate_role(cls, v: TeamRole):
+    def validate_role(cls, v: TeamRole) -> TeamRole:
         if v == TeamRole.OWNER:
             raise ValueError(f"{TeamRole.OWNER} role cannot be used for invitations")
         return v
