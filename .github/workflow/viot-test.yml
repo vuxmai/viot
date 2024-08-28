@@ -1,0 +1,44 @@
+name: Viot Test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "viot/**"
+      - ".github/workflows/viot-test.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "viot/**"
+      - ".github/workflows/viot-test.yml"
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: docker compose up -d
+
+      - name: Lint
+        run: docker compose exec -T viot-api bash /scripts/lint.sh
+
+      - name: Run tests
+        run: docker compose exec -T viot-api bash /scripts/test.sh "Coverage for ${{ github.sha }}"
+      - run: docker compose down -v --remove-orphans
+
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
