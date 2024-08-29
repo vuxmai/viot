@@ -1,5 +1,6 @@
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vuxmai_viot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=vuxmai_viot)
 # Viot
 
 `Viot` is a project aimed at practicing the development of an IoT application.
