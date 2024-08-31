@@ -26,7 +26,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Viot API docker image staging to GHCR
-        uses: docker/push-action@v5
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/viot/viot.dockerfile
@@ -34,7 +34,7 @@ jobs:
           tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/viot-api:staging
 
       - name: Push Viot Celery docker image staging to GHCR
-        uses: docker/push-action@v5
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/viot-celery/viot-celery.dockerfile
