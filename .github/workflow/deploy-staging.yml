@@ -1,0 +1,42 @@
+name: Update staging docker images
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  update_staging:
+    name: Update staging docker images
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Viot API docker image staging to GHCR
+        uses: docker/push-action@v5
+        with:
+          context: .
+          file: ./docker/viot/viot.dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/viot-api:staging
+
+      - name: Push Viot Celery docker image staging to GHCR
+        uses: docker/push-action@v5
+        with:
+          context: .
+          file: ./docker/viot-celery/viot-celery.dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/viot-celery:staging
