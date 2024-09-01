@@ -33,3 +33,6 @@ If you want to run pre-commit manually, you can use:
 ```
 pre-commit run --all-files
 ```
+
+## Backend
+For more information about the backend, please refer to the [Viot README.md](viot/README.md) file.
