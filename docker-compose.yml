@@ -25,7 +25,7 @@ services:
       viot:
         aliases:
           - nginx
-      
+
   # emqx:
   #   image: emqx:5.7.2
   #   container_name: emqx
@@ -37,7 +37,7 @@ services:
   #   volumes:
   #     - emqx-data:/opt/emqx/data
   #     - emqx-log:/opt/emqx/log
-  #     - ./docker/emqx/etc/emqx.conf:/opt/emqx/etc/emqx.conf 
+  #     - ./docker/emqx/etc/emqx.conf:/opt/emqx/etc/emqx.conf
   #     - ./docker/emqx/etc/api_keys.txt:/opt/emqx/etc/api_keys.txt
   #   environment:
   #     - EMQX_HOST=node1.viot
@@ -99,7 +99,9 @@ services:
     environment:
       - VIOT_ENV=dev
       - VIOT_DOMAIN=viot.local
+      - VIOT_API_DOMAIN=api.viot.local
       - VIOT_API_PORT=8000
+      - VIOT_API_PREFIX=/v1
       - VIOT_ALLOW_CREDENTIALS=true
       - VIOT_ALLOW_CORS_ORIGINS=["http://localhost:3000", "http://fe.viot.local"]
       - VIOT_POSTGRES_SERVER=timescaledb
@@ -110,12 +112,16 @@ services:
       - VIOT_REDIS_SERVER=redis
       - VIOT_REDIS_PORT=6379
       - VIOT_JWT_SECRET=secret
+      - VIOT_CELERY_REDIS_SERVER=redis
+      - VIOT_CELERY_REDIS_PORT=6379
+      - VIOT_CELERY_BROKER_REDIS_DATABASE=0
+      - VIOT_CELERY_BACKEND_REDIS_DATABASE=1
 
       # https://github.com/testcontainers/testcontainers-python/issues/475#issuecomment-2334343767
       - TESTCONTAINERS_RYUK_DISABLED=true
     user: root  # Required for pytest with testcontainers
     volumes:
-      - ./viot:/code
+      - ./viot:/viot
       # Required for pytest with testcontainers
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:

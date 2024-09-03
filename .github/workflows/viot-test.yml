@@ -32,10 +32,10 @@ jobs:
       - run: docker compose up -d
 
       - name: Lint
-        run: docker compose exec -T viot-api bash /scripts/lint.sh
+        run: docker compose exec -T viot-api bash /viot/scripts/lint.sh
 
       - name: Run tests
-        run: docker compose exec -T viot-api bash /scripts/test.sh "Coverage for ${{ github.sha }}"
+        run: docker compose exec -T viot-api bash /viot/scripts/test.sh
       - run: docker compose down -v --remove-orphans
 
       - name: Upload results to Codecov
