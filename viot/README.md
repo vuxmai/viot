@@ -60,30 +60,25 @@ We use Pytest for running our test suite and [Testcontainers](https://testcontai
 
    Run the following command to run the test suite with docker:
    ```
-   docker compose exec -it viot-api pytest
-   ```
-
-   With coverage:
-   ```
-   docker compose exec -it viot-api coverage run -m pytest -v
-   docker compose exec -it viot-api coverage report
+   docker compose exec -it viot-api /viot/scripts/test.sh
    ```
 
 2. Without docker
 
+   Run the following command to install the dependencies:
+   ```
+   # Current dir: viot
+   cd viot
+   poetry install
+   ```
+
+   Activate the virtual environment:
+   ```
+   poetry shell
+   ```
+
    Run the following command to run the test suite:
    ```
-   pytest
+   chmod +x ./scripts/test.sh
+   ./scripts/test.sh
    ```
-
-   With coverage:
-   ```
-   coverage run -m pytest
-   coverage report
-   ```
-
-   For faster test execution we use `pytest-xdist`, use the following command:
-   ```
-   coverage run -m pytest -n auto
-   ```
-   Warning: `pytest-xdist` does not work correctly with `coverage` when running the tests with coverage so the coverage report will not be accurate.

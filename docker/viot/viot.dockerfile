@@ -22,13 +22,13 @@ RUN if [ "$INSTALL_DEV" = "true" ]; then \
 
 FROM python-base AS production
 
-WORKDIR /code
+WORKDIR /viot
 
-COPY --from=builder /tmp/requirements.txt /code/requirements.txt
+COPY --from=builder /tmp/requirements.txt /viot/requirements.txt
 
-RUN pip install --no-cache-dir -r /code/requirements.txt
+RUN pip install --no-cache-dir -r /viot/requirements.txt
 
-COPY ${PROJECT_DIR}/app /code/app
+COPY ${PROJECT_DIR}/app /viot/app
 
 ENV PYTHONPATH=':$PYTHONPATH:.'
 

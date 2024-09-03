@@ -16,22 +16,22 @@ RUN poetry export --without-hashes --without dev -f requirements.txt -o requirem
 
 FROM python-base AS production
 
-WORKDIR /code
+WORKDIR /viot
 
-COPY --from=builder /tmp/requirements.txt /code/requirements.txt
+COPY --from=builder /tmp/requirements.txt /viot/requirements.txt
 
-RUN pip install --no-cache-dir -r /code/requirements.txt
+RUN pip install --no-cache-dir -r /viot/requirements.txt
 
-COPY ${PROJECT_DIR}/app /code/app
-COPY ${PROJECT_DIR}/scripts/start-celery.sh /code/celery-entrypoint.sh
+COPY ${PROJECT_DIR}/app /viot/app
+COPY ${PROJECT_DIR}/scripts/start-celery.sh /viot/celery-entrypoint.sh
 
 # https://docs.celeryq.dev/en/stable/getting-started/first-steps-with-celery.html#worker-doesn-t-start-permission-error
 RUN ln -s /run/shm /dev/shm && \
-    mkdir -p /code/app/logs && \
-    chmod +x /code/celery-entrypoint.sh && \
+    mkdir -p /viot/app/logs && \
+    chmod +x /viot/celery-entrypoint.sh && \
     groupadd -r viot && \
     useradd -r -m -g viot viot && \
-    chown -R viot:viot /code
+    chown -R viot:viot /viot
 
 USER viot
 
