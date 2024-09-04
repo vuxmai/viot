@@ -5,13 +5,13 @@ from uuid import UUID
 from fastapi import Depends
 from fastapi.params import Path
 
-from app.container import injector
+from app import injector
 from app.module.auth.dependency import DependCurrentUser
-from app.module.user.model import User
+from app.module.auth.model.user import User
 
-from .constant import TeamRole
-from .exception import InsufficientTeamRoleException, TeamPermissionDeniedException
-from .repository import UserTeamRepository
+from .constants import TeamRole
+from .exception.team_exception import InsufficientTeamRoleException, TeamPermissionDeniedException
+from .repository.user_team_repository import UserTeamRepository
 
 
 @lru_cache

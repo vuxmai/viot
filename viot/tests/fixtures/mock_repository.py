@@ -2,10 +2,14 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from app.module.auth.repository import PasswordResetRepository, RefreshTokenRepository
-from app.module.team.repository import TeamRepository, UserTeamRepository
-from app.module.team_invitation.repository import TeamInvitationRepository
-from app.module.user.repository import UserRepository
+from app.module.auth.repository.password_reset_repository import PasswordResetRepository
+from app.module.auth.repository.refresh_token_repository import RefreshTokenRepository
+from app.module.auth.repository.user_repository import UserRepository
+from app.module.team.repository.team_invitation_repository import (
+    TeamInvitationRepository,
+)
+from app.module.team.repository.team_repository import TeamRepository
+from app.module.team.repository.user_team_repository import UserTeamRepository
 
 
 @pytest.fixture

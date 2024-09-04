@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.pool import NullPool
 
 from app import models  # type: ignore # noqa: F401
-from app.config import settings
+from app.config import app_settings
 from app.database.base import Base
 from app.database.context import session_ctx
 from app.database.dependency import get_session
@@ -106,6 +106,6 @@ async def client(
 
     async with AsyncClient(
         transport=ASGITransport(app=app),  # type: ignore
-        base_url=f"http://localhost{settings.API_PREFIX}",  # Using localhost for cookie testing
+        base_url=f"http://localhost{app_settings.API_PREFIX}",  # Using localhost for cookie testing
     ) as client:
         yield client

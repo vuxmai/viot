@@ -13,8 +13,8 @@ class RedisSettings(BaseSettings):
 
 
 @lru_cache
-def _get_settings() -> RedisSettings:
+def get_redis_settings() -> RedisSettings:
     return RedisSettings()
 
 
-redis_settings = _get_settings()
+redis_settings = get_redis_settings()

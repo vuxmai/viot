@@ -2,13 +2,12 @@ from functools import lru_cache
 from typing import Any, Literal
 
 from pydantic import AnyHttpUrl, computed_field
-from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from . import __version__
 
 
-class Settings(BaseSettings):
+class AppSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="VIOT_", env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
@@ -17,41 +16,24 @@ class Settings(BaseSettings):
 
     ENV: Literal["dev", "prod"] = "dev"
     WORKERS: int = 1
-    DOMAIN: str = "localhost"
-    UI_URL: str = "http://localhost:5173"
+    DOMAIN: str
+    API_DOMAIN: str
+    UI_URL: str
 
     API_PORT: int = 8000
     API_PREFIX: str = ""
 
     ALLOW_CREDENTIALS: bool = True
-    ALLOW_CORS_ORIGINS: list[AnyHttpUrl | str] = [
-        "http://localhost:5173",
-    ]
+    ALLOW_CORS_ORIGINS: list[AnyHttpUrl | str] = []
     ALLOW_METHODS: list[str] = ["*"]
     ALLOW_CORS_HEADERS: list[str] = ["*"]
 
-    POSTGRES_SERVER: str
-    POSTGRES_PORT: int = 5432
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-
-    JWT_SECRET: str
-    JWT_ALG: str = "HS256"
-    JWT_REFRESH_TOKEN_SAMESITE: Literal["Strict", "Lax", "None"] = "Lax"
-    JWT_REFRESH_TOKEN_SECURE: bool = True
-
     @computed_field  # type: ignore
     @property
-    def SQLALCHEMY_DATABASE_URI(self) -> str:
-        return MultiHostUrl.build(
-            scheme="postgresql+asyncpg",
-            username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
-            host=self.POSTGRES_SERVER,
-            port=self.POSTGRES_PORT,
-            path=self.POSTGRES_DB,
-        ).unicode_string()
+    def API_SERVER_URL(self) -> str:
+        if self.ENV == "dev":
+            return f"http://{self.API_DOMAIN}"
+        return f"https://{self.API_DOMAIN}"
 
     @computed_field  # type: ignore
     @property
@@ -67,8 +49,8 @@ class Settings(BaseSettings):
 
 
 @lru_cache
-def _get_settings() -> Settings:
-    return Settings()  # type: ignore
+def get_app_settings() -> AppSettings:
+    return AppSettings()  # type: ignore
 
 
-settings: Settings = _get_settings()
+app_settings: AppSettings = get_app_settings()

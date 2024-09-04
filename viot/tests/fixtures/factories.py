@@ -4,9 +4,9 @@ from typing import Any
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.module.auth.utils import hash_password
-from app.module.user.constant import ViotUserRole
-from app.module.user.model import User
+from app.module.auth.constants import ViotUserRole
+from app.module.auth.model.user import User
+from app.module.auth.utils.password_utils import hash_password
 
 last_user = 0
 

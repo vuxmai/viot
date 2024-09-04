@@ -2,15 +2,21 @@ from unittest.mock import Mock
 
 import pytest
 
-from app.module.auth.repository import PasswordResetRepository, RefreshTokenRepository
-from app.module.auth.service import AuthService
+from app.module.auth.repository.password_reset_repository import PasswordResetRepository
+from app.module.auth.repository.refresh_token_repository import RefreshTokenRepository
+from app.module.auth.repository.user_repository import UserRepository
+from app.module.auth.service.auth_service import AuthService
+from app.module.auth.service.password_reset_service import PasswordResetService
+from app.module.auth.service.token_service import TokenService
+from app.module.auth.service.user_service import UserService
 from app.module.email.service import IEmailService
-from app.module.team.repository import TeamRepository, UserTeamRepository
-from app.module.team.service import TeamService
-from app.module.team_invitation.repository import TeamInvitationRepository
-from app.module.team_invitation.service import TeamInvitationService
-from app.module.user.repository import UserRepository
-from app.module.user.service import UserService
+from app.module.team.repository.team_invitation_repository import (
+    TeamInvitationRepository,
+)
+from app.module.team.repository.team_repository import TeamRepository
+from app.module.team.repository.user_team_repository import UserTeamRepository
+from app.module.team.service.team_invitation_service import TeamInvitationService
+from app.module.team.service.team_service import TeamService
 
 
 @pytest.fixture
@@ -30,6 +36,29 @@ def auth_service(
         user_repository=mock_user_repository,
         refresh_token_repository=mock_refresh_token_repository,
         password_reset_repository=mock_password_reset_repository,
+    )
+
+
+@pytest.fixture
+def password_reset_service(
+    mock_email_service: IEmailService,
+    mock_user_repository: UserRepository,
+    mock_password_reset_repository: PasswordResetRepository,
+) -> PasswordResetService:
+    return PasswordResetService(
+        email_service=mock_email_service,
+        user_repository=mock_user_repository,
+        password_reset_repository=mock_password_reset_repository,
+    )
+
+
+@pytest.fixture
+def token_service(
+    mock_user_repository: UserRepository, mock_refresh_token_repository: RefreshTokenRepository
+) -> TokenService:
+    return TokenService(
+        user_repository=mock_user_repository,
+        refresh_token_repository=mock_refresh_token_repository,
     )
 
 

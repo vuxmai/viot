@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from app.container import injector
-from app.module.auth.controller import AuthController
-from app.module.team.controller import TeamController
-from app.module.team_invitation.controller import TeamInvitationController
-from app.module.user.controller import UserController
+from app import injector
+from app.module.auth.controller.auth_controller import AuthController
+from app.module.auth.controller.user_controller import UserController
+from app.module.team.controller.team_controller import TeamController
+from app.module.team.controller.team_invitation_controller import TeamInvitationController
 
 router = APIRouter()
 

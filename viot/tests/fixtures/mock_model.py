@@ -1,17 +1,18 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock
 from uuid import uuid4
 
 import pytest
 from faker import Faker
 
-from app.module.auth.model import PasswordReset
-from app.module.auth.utils import hash_password
-from app.module.team.constant import TeamRole
-from app.module.team.model import Team
-from app.module.team_invitation.model import TeamInvitation
-from app.module.user.constant import ViotUserRole
-from app.module.user.model import User
+from app.module.auth.constants import REFRESH_TOKEN_DURATION_SEC, ViotUserRole
+from app.module.auth.model.password_reset import PasswordReset
+from app.module.auth.model.refresh_token import RefreshToken
+from app.module.auth.model.user import User
+from app.module.auth.utils.password_utils import hash_password
+from app.module.team.constants import TeamRole
+from app.module.team.model.team import Team
+from app.module.team.model.team_invitation import TeamInvitation
 
 
 @pytest.fixture
@@ -30,6 +31,16 @@ def mock_user() -> Mock:
     user.updated_at = None
     user.verified = True
     return user
+
+
+@pytest.fixture
+def mock_refresh_token(mock_user: Mock) -> Mock:
+    refresh_token = Mock(spec=RefreshToken)
+    refresh_token.id = uuid4()
+    refresh_token.user_id = mock_user.id
+    refresh_token.token = uuid4().hex
+    refresh_token.expires_at = datetime.now(UTC) + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC)
+    return refresh_token
 
 
 @pytest.fixture

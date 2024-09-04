@@ -5,20 +5,18 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app.container import injector
-from app.module.user.constant import ViotUserRole
-from app.module.user.model import User
-from app.module.user.repository import UserRepository
+from app import injector
 
-from .dto import AccessToken
-from .exception import (
-    InvalidTokenException,
+from .constants import ViotUserRole
+from .exception.auth_exception import (
     UnauthorizedException,
     UserDisabledException,
     UserNotVerifiedException,
     ViotRoleException,
 )
-from .token import parse_access_token
+from .model.user import User
+from .repository.user_repository import UserRepository
+from .utils.token_utils import AccessToken, parse_access_token
 
 _http_bearer = HTTPBearer(auto_error=False)
 
@@ -34,7 +32,7 @@ async def get_access_token(
 ) -> AccessToken:
     """Get access token dependency"""
     if header is None:
-        raise InvalidTokenException()
+        raise UnauthorizedException
     return parse_access_token(header.credentials)
 
 
@@ -44,12 +42,12 @@ async def get_current_user(
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> User:
     """Get current user dependency"""
-    user = await user_repository.find(id=access_token.sub)
+    user = await user_repository.find(id=access_token.user_id)
     if user is None:
         raise UnauthorizedException
     if user.disabled:
         raise UserDisabledException
-    if user.verified is False:
+    if user.email_verified_at is None:
         raise UserNotVerifiedException
     return user
 

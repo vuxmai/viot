@@ -7,9 +7,9 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from app import models  # noqa: F401
-from app.config import settings
+from app import models  # type: ignore # noqa: F401
 from app.database.base import Base
+from app.database.config import db_settings
 
 logger = logging.getLogger("alembic.env")
 # this is the Alembic Config object, which provides
@@ -62,7 +62,7 @@ async def run_async_migrations() -> None:
     """
 
     cg = config.get_section(config.config_ini_section, {})
-    cg["sqlalchemy.url"] = settings.SQLALCHEMY_DATABASE_URI
+    cg["sqlalchemy.url"] = db_settings.SQLALCHEMY_DATABASE_URI
 
     connectable = async_engine_from_config(
         cg,

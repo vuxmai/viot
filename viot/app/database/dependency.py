@@ -1,9 +1,10 @@
 from collections.abc import AsyncGenerator
 
 from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .context import session_ctx
-from .engine import AsyncSession, async_engine
+from .engine import async_engine
 
 
 async def get_session() -> AsyncGenerator[None, None]:

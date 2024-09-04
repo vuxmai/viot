@@ -19,7 +19,7 @@ class CelerySettings(BaseSettings):
     BACKEND_REDIS_TIMEOUT: float = 5.0
 
     TASK_PACKAGES: list[str] = [
-        "app.celery_worker.tasks",
+        "app.celery_worker.tasks.email",
     ]
 
     @computed_field  # type: ignore
@@ -34,8 +34,8 @@ class CelerySettings(BaseSettings):
 
 
 @lru_cache
-def _get_settings() -> CelerySettings:
+def get_celery_settings() -> CelerySettings:
     return CelerySettings()  # type: ignore
 
 
-celery_settings = _get_settings()
+celery_settings = get_celery_settings()

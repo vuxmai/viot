@@ -8,7 +8,7 @@ from app.common.dto import ErrorDto
 from app.common.exception.base import ViotHttpException
 from app.common.exception.constant import MessageError
 from app.common.fastapi.serializer import JSONResponse
-from app.config import settings
+from app.config import app_settings
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +50,6 @@ def register_exception_handlers(app: FastAPI) -> None:
             content=ErrorDto(
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 error_code=MessageError.INTERNAL_SERVER_ERROR,
-                message=str(exc) if settings.ENV == "dev" else "Something went wrong",
+                message=str(exc) if app_settings.ENV == "dev" else "Something went wrong",
             ),
         )

@@ -7,7 +7,7 @@ from sqlalchemy import DateTime
 from sqlalchemy.orm import Mapped, MappedAsDataclass, mapped_column
 from sqlalchemy.types import UUID as UUIDType
 
-PrimaryKey = Annotated[
+UUIDPrimaryKey = Annotated[
     UUID,
     mapped_column(
         UUIDType(as_uuid=True),
