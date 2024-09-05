@@ -109,8 +109,6 @@ services:
       - VIOT_POSTGRES_USER=postgres
       - VIOT_POSTGRES_PASSWORD=postgres
       - VIOT_POSTGRES_DB=postgres
-      - VIOT_REDIS_SERVER=redis
-      - VIOT_REDIS_PORT=6379
       - VIOT_JWT_SECRET=secret
       - VIOT_CELERY_REDIS_SERVER=redis
       - VIOT_CELERY_REDIS_PORT=6379
