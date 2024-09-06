@@ -22,7 +22,11 @@ class BaseInDto(ViotDto):
 class BaseOutDto(ViotDto):
     """Base output model"""
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        # https://github.com/fastapi/fastapi/discussions/10697#discussioncomment-10049975
+        json_schema_mode_override="serialization",
+    )
 
 
 class ErrorDto(BaseOutDto):
