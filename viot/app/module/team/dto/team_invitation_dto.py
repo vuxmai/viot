@@ -29,10 +29,6 @@ class TeamInvitationDeclineDto(BaseInDto):
     token: str
 
 
-class TeamInvitationRevokeDto(BaseInDto):
-    token: str
-
-
 class TeamInvitationDto(BaseOutDto):
     id: UUID
     email: str

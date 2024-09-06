@@ -20,7 +20,6 @@ from ..dto.team_invitation_dto import (
     TeamInvitationCreateDto,
     TeamInvitationDeclineDto,
     TeamInvitationDto,
-    TeamInvitationRevokeDto,
 )
 from ..service.team_invitation_service import TeamInvitationService
 
@@ -40,6 +39,9 @@ class TeamInvitationController(Controller):
         status_code=200,
         summary="Get all team invitations",
         responses={200: {"model": PagingTeamInvitationDto}},
+        dependencies=[
+            RequireAnyTeamRole({TeamRole.MEMBER}),
+        ],
     )
     async def get_all_team_invitations(
         self,
@@ -79,7 +81,7 @@ class TeamInvitationController(Controller):
         return JSONResponse(content=invitation, status_code=201)
 
     @delete(
-        "/{team_id}/invitations/revoke",
+        "/{team_id}/invitations/revoke/{invitation_id}",
         status_code=204,
         summary="Revoke a team invitation",
         dependencies=[
@@ -89,12 +91,10 @@ class TeamInvitationController(Controller):
     async def revoke_team_invitation(
         self,
         *,
-        team_invitation_revoke_dto: Annotated[TeamInvitationRevokeDto, Body(...)],
+        invitation_id: Annotated[UUID, Path(...)],
     ) -> JSONResponse[None]:
         """Revoke a team invitation"""
-        await self._team_invitation_service.revoke_team_invitation(
-            token=team_invitation_revoke_dto.token
-        )
+        await self._team_invitation_service.revoke_team_invitation_by_id(id=invitation_id)
         return JSONResponse.no_content()
 
     @post(

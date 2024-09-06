@@ -109,8 +109,12 @@ class TeamInvitationService:
     async def decline_team_invitation(self, *, token: str) -> None:
         await self._delete_team_invitation_by_token(token)
 
-    async def revoke_team_invitation(self, *, token: str) -> None:
-        await self._delete_team_invitation_by_token(token)
+    async def revoke_team_invitation_by_id(self, *, id: UUID) -> None:
+        invitation = await self._team_invitation_repository.find(id)
+        if invitation is None:
+            raise TeamInvitationNotFoundException
+
+        await self._team_invitation_repository.delete(invitation)
 
     async def _delete_team_invitation_by_token(self, token: str) -> None:
         invitation = await self._team_invitation_repository.find_by_token(token)
