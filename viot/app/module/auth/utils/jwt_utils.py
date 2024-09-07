@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -19,7 +18,6 @@ def create_jwt_token(
     expire_at = issue_at + int(expire_duration.total_seconds())
     payload["exp"] = expire_at
     payload["iat"] = issue_at
-    payload["jti"] = str(uuid.uuid4())
     return jwt.encode(payload, auth_settings.JWT_SECRET, algorithm=JWT_ALG), expire_at
 
 

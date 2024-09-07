@@ -17,6 +17,7 @@ class RefreshTokenRepository(CrudRepository[RefreshToken, int]):
             select(RefreshToken.token)
             .where(RefreshToken.user_id == user_id)
             .order_by(RefreshToken.expires_at.desc())
+            .limit(1)
         )
         return (await self.session.execute(stmt)).scalar_one_or_none()
 

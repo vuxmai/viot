@@ -48,18 +48,20 @@ class AuthService:
         if not user or not verify_password(login_dto.password, user.password):
             raise InvalidCredentialsException
 
-        await self._refresh_token_repository.save(
-            obj=RefreshToken(
-                user_id=user.id,
-                token=uuid.uuid4().hex,
-                expires_at=datetime.now().replace(tzinfo=None)
-                + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC),
+        rf_token = (
+            await self._refresh_token_repository.save(
+                obj=RefreshToken(
+                    user_id=user.id,
+                    token=uuid.uuid4().hex,
+                    expires_at=datetime.now().replace(tzinfo=None)
+                    + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC),
+                )
             )
-        )
+        ).token
         ac_token, ac_expire = create_access_token(access_token=AccessToken(user_id=user.id))
 
         return TokenDto(
-            access_token=ac_token, refresh_token=ac_token, access_token_expires_at=ac_expire
+            access_token=ac_token, refresh_token=rf_token, access_token_expires_at=ac_expire
         )
 
     async def register(self, *, register_dto: RegisterDto) -> UserDto:
