@@ -31,12 +31,13 @@ jobs:
 
       - name: Install Poetry
         run: |
-          cd viot
           pip install poetry
           poetry config virtualenvs.create false
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root
+        run:
+          cd viot
+          poetry install --no-interaction --no-root
 
       - name: Pre-commit
         run: pre-commit run --all-files
