@@ -40,10 +40,14 @@ jobs:
           poetry install --no-interaction --no-root
 
       - name: Lint
-        run: bash ./viot/scripts/lint.sh
+        run: |
+          cd viot
+          bash ./scripts/lint.sh
 
       - name: Tests
-        run: bash ./viot/scripts/test.sh
+        run: |
+          cd viot
+          bash ./scripts/test.sh
 
       # - name: Upload results to Codecov
       #   uses: codecov/codecov-action@v4
