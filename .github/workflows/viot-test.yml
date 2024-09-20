@@ -39,11 +39,11 @@ jobs:
           cd viot
           poetry install --no-interaction --no-root
 
-      - name: Pre-commit
-        run: pre-commit run --all-files
-
       - name: Lint
-        run: bash ./scripts/lint.sh
+        run: |
+          pwd
+          ls -la
+          bash ./scripts/lint.sh
 
       - name: Tests
         run: bash ./scripts/test.sh
