@@ -31,6 +31,7 @@ jobs:
 
       - name: Install Poetry
         run: |
+          cd viot
           pip install poetry
           poetry config virtualenvs.create false
 
