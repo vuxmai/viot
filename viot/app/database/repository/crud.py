@@ -4,7 +4,7 @@ from contextvars import ContextVar
 from typing import Any, Generic, TypeVar, get_args
 
 from injector import inject
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.base import Base
@@ -76,3 +76,7 @@ class CrudRepository(ICrudRepository[TBaseModel, TPrimaryKey]):
     async def delete(self, obj: TBaseModel) -> None:
         await self.session.delete(obj)
         await self.session.flush()
+
+    async def delete_by_id(self, id: TPrimaryKey) -> None:
+        stmt = delete(self._model).where(self._model.id == id)
+        await self.session.execute(stmt)
