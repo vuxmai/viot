@@ -32,6 +32,10 @@ class TeamRepository(CrudRepository[Team, UUID]):
         stmt = select(exists().where(Team.slug == slug))
         return bool((await self.session.execute(stmt)).scalar())
 
+    async def exists_by_id(self, id: UUID) -> bool:
+        stmt = select(exists().where(Team.id == id))
+        return bool((await self.session.execute(stmt)).scalar())
+
     async def user_has_teams(self, user_id: UUID) -> bool:
         stmt = select(exists().where(UserTeamRole.user_id == user_id))
         return bool((await self.session.execute(stmt)).scalar())
