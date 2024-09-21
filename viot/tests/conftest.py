@@ -16,6 +16,7 @@ from app.database.base import Base
 from app.database.context import session_ctx
 from app.database.dependency import get_session
 from app.database.engine import create_async_engine
+from tests.utils import load_env  # type: ignore # noqa: F401
 from tests.utils.email import MockEmailService
 from tests.utils.testcontainers import DbContainer, FixedAsyncRedisContainer, FixedPostgresContainer
 
