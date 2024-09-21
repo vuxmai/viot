@@ -1,6 +1,6 @@
 import logging
 import uuid
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from uuid import UUID
 
 from injector import inject
@@ -94,7 +94,7 @@ class AuthService:
     async def logout(self, *, refresh_token: str) -> None:
         try:
             await self._refresh_token_repository.update_token_expires_at(
-                token=refresh_token, expires_at=datetime.now(UTC)
+                token=refresh_token, expires_at=datetime.now()
             )
         except Exception as e:
             logger.warning(f"Failed to logout: {e}")
