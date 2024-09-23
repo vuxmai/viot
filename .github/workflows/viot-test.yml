@@ -1,4 +1,4 @@
-name: Viot Test
+name: Viot Tests and Linting
 
 on:
   push:
