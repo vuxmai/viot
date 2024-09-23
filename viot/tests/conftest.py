@@ -1,4 +1,4 @@
-import logging
+import logging  # noqa: I001
 from collections.abc import AsyncGenerator, Generator
 from unittest.mock import patch
 
@@ -10,6 +10,7 @@ from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.pool import NullPool
 
+from tests.utils import load_env  # type: ignore # noqa: F401
 from app import models  # type: ignore # noqa: F401
 from app.config import app_settings
 from app.database.base import Base

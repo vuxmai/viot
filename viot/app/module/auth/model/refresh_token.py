@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy import TEXT, DateTime, ForeignKey, Integer
@@ -13,10 +13,10 @@ class RefreshToken(Base):
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True, init=False)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
     token: Mapped[str] = mapped_column(TEXT, unique=True)
-    expires_at: Mapped[datetime] = mapped_column(DateTime)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default_factory=lambda: datetime.now().replace(tzinfo=None),
+        DateTime(timezone=True),
+        default_factory=lambda: datetime.now(UTC),
         sort_order=999,
         init=False,
     )

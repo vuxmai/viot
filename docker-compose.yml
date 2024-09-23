@@ -102,8 +102,9 @@ services:
       - VIOT_API_DOMAIN=api.viot.local
       - VIOT_API_PORT=8000
       - VIOT_API_PREFIX=/v1
+      - VIOT_UI_URL=http://localhost:5173
       - VIOT_ALLOW_CREDENTIALS=true
-      - VIOT_ALLOW_CORS_ORIGINS=["http://localhost:3000", "http://fe.viot.local"]
+      - VIOT_ALLOW_CORS_ORIGINS=["http://localhost:5173", "http://fe.viot.local"]
       - VIOT_POSTGRES_SERVER=timescaledb
       - VIOT_POSTGRES_PORT=5432
       - VIOT_POSTGRES_USER=postgres
