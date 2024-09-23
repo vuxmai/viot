@@ -1,13 +1,16 @@
-name: Update staging docker images
+name: Update Viot staging docker images
 
 on:
   push:
     branches:
       - main
-
+    paths:
+      - "viot/**"
+      - ".github/workflows/viot-staging.yml"
+      - "docker/viot/**"
+      - "docker-compose.yml"
 jobs:
   update_staging:
-    name: Update staging docker images
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -30,7 +33,7 @@ jobs:
           context: .
           file: ./docker/viot/viot.dockerfile
           push: true
-          tags: ghcr.io/viot-api:staging
+          tags: ghcr.io/viot_api:staging
 
       - name: Push Viot Celery docker image staging to GHCR
         uses: docker/build-push-action@v5
@@ -38,4 +41,4 @@ jobs:
           context: .
           file: ./docker/viot-celery/celery.dockerfile
           push: true
-          tags: ghcr.io/viot-celery:staging
+          tags: ghcr.io/viot_celery:staging
