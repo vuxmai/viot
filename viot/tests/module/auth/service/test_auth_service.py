@@ -12,12 +12,16 @@ from app.module.auth.service.auth_service import AuthService
 
 
 async def test_login_correctly(
-    auth_service: AuthService, mock_user_repository: AsyncMock, mock_user: Mock
+    auth_service: AuthService,
+    mock_user_repository: AsyncMock,
+    mock_refresh_token_repository: AsyncMock,
+    mock_user: Mock,
+    mock_refresh_token: Mock,
 ) -> None:
     # given
     login_dto = LoginDto(email=mock_user.email, password=mock_user.raw_password)
     mock_user_repository.find_by_email.return_value = mock_user
-
+    mock_refresh_token_repository.save.return_value = mock_refresh_token
     # when
     result = await auth_service.login(login_dto=login_dto)
 

@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Annotated
 from uuid import UUID
 
@@ -29,14 +29,14 @@ class DateTimeMixin(MappedAsDataclass):
     """Mixin for DateTime"""
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default_factory=lambda: datetime.now().replace(tzinfo=None),
+        DateTime(timezone=True),
+        default_factory=lambda: datetime.now(UTC),
         sort_order=998,
         init=False,
     )
     updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime,
-        onupdate=lambda: datetime.now().replace(tzinfo=None),
+        DateTime(timezone=True),
+        onupdate=lambda: datetime.now(UTC),
         nullable=True,
         sort_order=999,
         init=False,

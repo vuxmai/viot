@@ -27,7 +27,7 @@ def mock_user() -> Mock:
     user.password = hash_password("!abcABC123")
     user.role = ViotUserRole.USER
     user.disabled = False
-    user.created_at = datetime.now()
+    user.created_at = datetime.now(UTC)
     user.updated_at = None
     user.verified = True
     return user

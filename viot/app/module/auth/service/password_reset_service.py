@@ -9,13 +9,14 @@ from app.module.email.service import IEmailService
 from ..constants import FORGOT_PASSWORD_DURATION_SEC
 from ..dto.reset_password_dto import ResetPasswordDto
 from ..exception.auth_exception import (
+    DuplicatePasswordException,
     InvalidResetPasswordTokenException,
     ResetPasswordTokenExpiredException,
 )
 from ..model.password_reset import PasswordReset
 from ..repository.password_reset_repository import PasswordResetRepository
 from ..repository.user_repository import UserRepository
-from ..utils.password_utils import hash_password
+from ..utils.password_utils import hash_password, verify_password
 
 
 class PasswordResetService:
@@ -59,6 +60,9 @@ class PasswordResetService:
         user = await self._user_repository.find_by_email(email=password_reset.email)
         if not user:
             raise InvalidResetPasswordTokenException
+
+        if verify_password(reset_password_dto.password, user.password):
+            raise DuplicatePasswordException
 
         await self._user_repository.update_password(
             user_id=user.id, hashed_password=hash_password(reset_password_dto.password)

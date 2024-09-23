@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import TEXT, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
@@ -12,5 +12,5 @@ class PasswordReset(Base):
     email: Mapped[str] = mapped_column(TEXT, primary_key=True)
     token: Mapped[str] = mapped_column(TEXT, unique=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, default_factory=lambda: datetime.now().replace(tzinfo=None), init=False
+        DateTime(timezone=True), default_factory=lambda: datetime.now(UTC), init=False
     )

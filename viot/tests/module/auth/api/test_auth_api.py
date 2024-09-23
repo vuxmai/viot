@@ -1,13 +1,15 @@
 import asyncio
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Any
 
 from httpx import AsyncClient
 
 from app.config import app_settings
-from app.module.auth.constants import ViotUserRole
+from app.module.auth.constants import FORGOT_PASSWORD_DURATION_SEC, ViotUserRole
+from app.module.auth.model.password_reset import PasswordReset
 from app.module.auth.model.user import User
 from app.module.auth.utils.jwt_utils import create_jwt_token, parse_jwt_token
+from tests.utils.user_token import get_user_token
 
 
 async def test_login_200(client: AsyncClient, user_factory: Any) -> None:
@@ -149,3 +151,148 @@ async def test_verify_email_400_when_expired_token(client: AsyncClient, user_fac
     assert response.status_code == 400
     assert content["errorCode"] == "BAD_REQUEST"
     assert content["message"] == "The provided verify email token is invalid"
+
+
+async def test_logout_204(client: AsyncClient, user_factory: Any) -> None:
+    # given
+    user: User = await user_factory(password="!Test1234")
+    user_token = await get_user_token(client, user, "!Test1234")
+
+    # when
+    client.cookies.set("refreshToken", user_token.refresh_token)
+    response = await client.post(
+        "/auth/logout",
+        headers={"Authorization": f"Bearer {user_token.access_token}"},
+    )
+
+    # then
+    assert response.status_code == 204
+    assert "refreshToken" not in response.cookies
+
+
+async def test_refresh_200(client: AsyncClient, user_factory: Any) -> None:
+    # given
+    user: User = await user_factory(password="!Test1234")
+    user_token = await get_user_token(client, user, "!Test1234")
+
+    # when
+    client.cookies.set("refreshToken", user_token.refresh_token)
+    response = await client.post("/auth/refresh")
+    content = response.json()
+
+    # then
+    assert response.status_code == 200
+    assert content["accessToken"]
+    assert content["refreshToken"]
+    assert content["accessTokenExpiresAt"]
+
+
+# For failed cases refresh token will be fix in the next PR
+
+
+async def test_forgot_password_204(client: AsyncClient, user_factory: Any) -> None:
+    # given
+    user: User = await user_factory()
+
+    # when
+    response = await client.post("/auth/forgot-password", json={"email": user.email})
+
+    # then
+    assert response.status_code == 204
+
+
+async def test_forgot_password_204_when_email_not_exists(client: AsyncClient) -> None:
+    # given
+    email = "not_existing_email@test.com"
+
+    # when
+    response = await client.post("/auth/forgot-password", json={"email": email})
+
+    # then
+    assert response.status_code == 204
+
+
+async def test_reset_password_204(
+    client: AsyncClient, user_factory: Any, password_reset_factory: Any
+) -> None:
+    # given
+    user: User = await user_factory(password="!Test1234")
+    password_reset: PasswordReset = await password_reset_factory(email=user.email)
+    data = {"token": password_reset.token, "password": "!Test12345678"}
+
+    # when
+    response = await client.post("/auth/reset-password", json=data)
+
+    # then
+    assert response.status_code == 204
+
+
+async def test_reset_password_400_when_invalid_token(client: AsyncClient) -> None:
+    # given
+    token = "123456"
+    data = {"token": token, "password": "!Test12345678"}
+
+    # when
+    response = await client.post("/auth/reset-password", json=data)
+    content = response.json()
+
+    # then
+    assert response.status_code == 400
+    assert content["errorCode"] == "BAD_REQUEST"
+    assert content["message"] == "The provided reset password token is invalid"
+
+
+async def test_reset_password_400_when_expired_token(
+    client: AsyncClient, user_factory: Any, password_reset_factory: Any
+) -> None:
+    # given
+    user: User = await user_factory()
+    password_reset: PasswordReset = await password_reset_factory(
+        email=user.email,
+        created_at=datetime.now() - timedelta(seconds=FORGOT_PASSWORD_DURATION_SEC),
+    )
+    data = {"token": password_reset.token, "password": "!Test12345678"}
+
+    # when
+    response = await client.post("/auth/reset-password", json=data)
+    content = response.json()
+
+    # then
+    assert response.status_code == 400
+    assert content["errorCode"] == "BAD_REQUEST"
+    assert content["message"] == "The provided reset password token has expired"
+
+
+async def test_reset_password_400_when_user_not_exists(
+    client: AsyncClient, password_reset_factory: Any
+) -> None:
+    # given
+    password_reset: PasswordReset = await password_reset_factory(email="usernotexists@test.com")
+    data = {"token": password_reset.token, "password": "!Test12345678"}
+
+    # when
+    response = await client.post("/auth/reset-password", json=data)
+    content = response.json()
+
+    # then
+    assert response.status_code == 400
+    assert content["errorCode"] == "BAD_REQUEST"
+    assert content["message"] == "The provided reset password token is invalid"
+
+
+async def test_reset_password_400_when_duplicate_password(
+    client: AsyncClient, user_factory: Any, password_reset_factory: Any
+) -> None:
+    # given
+    user: User = await user_factory(password="!Test1234")
+    password_reset: PasswordReset = await password_reset_factory(email=user.email)
+    data = {"token": password_reset.token, "password": "!Test1234"}
+
+    # when
+    response = await client.post("/auth/reset-password", json=data)
+    content = response.json()
+
+    # then
+    assert response.status_code == 400
+    assert content["errorCode"] == "BAD_REQUEST"
+    assert content["message"] == "New password must be different from the current password"

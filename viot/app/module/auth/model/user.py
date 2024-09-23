@@ -17,7 +17,7 @@ class User(Base, DateTimeMixin):
     first_name: Mapped[str] = mapped_column(TEXT)
     last_name: Mapped[str] = mapped_column(TEXT)
     email: Mapped[str] = mapped_column(TEXT, unique=True, index=True)
-    email_verified_at: Mapped[datetime | None] = mapped_column(DateTime, init=False)
+    email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), init=False)
     password: Mapped[bytes] = mapped_column(LargeBinary)
     role: Mapped[ViotUserRole] = mapped_column(TEXT)
     disabled: Mapped[bool] = mapped_column(Boolean, default=False)
