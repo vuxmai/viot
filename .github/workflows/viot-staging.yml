@@ -36,12 +36,12 @@ jobs:
           context: .
           file: ./docker/viot/viot.dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/viot/api:staging
+          tags: ghcr.io/${{ github.repository_owner }}/viot-api:staging
 
       - name: Push Viot Celery docker image staging to GHCR
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/viot-celery/celery.dockerfile
+          file: ./docker/viot/celery.dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/viot/celery:staging
+          tags: ghcr.io/${{ github.repository_owner }}/viot-celery:staging
