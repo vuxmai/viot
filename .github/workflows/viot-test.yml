@@ -35,19 +35,16 @@ jobs:
           poetry config virtualenvs.create false
 
       - name: Install dependencies
-        run: |
-          cd viot
-          poetry install --no-interaction --no-root
+        working-directory: ./viot
+        run: poetry install --no-interaction --no-root
 
       - name: Lint
-        run: |
-          cd viot
-          bash ./scripts/lint.sh
+        working-directory: ./viot
+        run: bash ./scripts/lint.sh
 
       - name: Tests
-        run: |
-          cd viot
-          bash ./scripts/test.sh
+        working-directory: ./viot
+        run: bash ./scripts/test.sh
 
       # - name: Upload results to Codecov
       #   uses: codecov/codecov-action@v4
