@@ -1,6 +1,6 @@
 import logging
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from injector import inject
@@ -33,7 +33,7 @@ class TokenService:
             raise InvalidCredentialsException
 
         # Check if token is expired
-        if rf_token_model.expires_at < datetime.now():
+        if rf_token_model.expires_at < datetime.now(UTC):
             raise TokenExpiredException
 
         user = await self._user_repository.find(rf_token_model.user_id)
@@ -46,7 +46,7 @@ class TokenService:
             # The provided refresh token is not the latest one
             # Invalidate all tokens and force user to login again
             await self._refresh_token_repository.update_all_tokens_expires_at(
-                user_id=user.id, expires_at=datetime.now()
+                user_id=user.id, expires_at=datetime.now(UTC)
             )
             logger.warning("Provided refresh token is not the latest one. Invalidate all tokens.")
             raise InvalidRefreshTokenException
@@ -56,7 +56,7 @@ class TokenService:
                 RefreshToken(
                     user_id=user.id,
                     token=uuid.uuid4().hex,
-                    expires_at=datetime.now() + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC),
+                    expires_at=datetime.now(UTC) + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC),
                 )
             )
         ).token

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -69,7 +69,7 @@ async def test_renew_token_raises_when_refresh_token_is_expired(
 ) -> None:
     # given
     mock_refresh_token_repository.find_by_token.return_value = mock_refresh_token
-    mock_refresh_token.expires_at = datetime.now() - timedelta(days=1)
+    mock_refresh_token.expires_at = datetime.now(UTC) - timedelta(days=1)
 
     # when
     with pytest.raises(TokenExpiredException):

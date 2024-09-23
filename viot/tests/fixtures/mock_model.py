@@ -27,7 +27,7 @@ def mock_user() -> Mock:
     user.password = hash_password("!abcABC123")
     user.role = ViotUserRole.USER
     user.disabled = False
-    user.created_at = datetime.now()
+    user.created_at = datetime.now(UTC)
     user.updated_at = None
     user.verified = True
     return user
@@ -39,7 +39,7 @@ def mock_refresh_token(mock_user: Mock) -> Mock:
     refresh_token.id = uuid4()
     refresh_token.user_id = mock_user.id
     refresh_token.token = uuid4().hex
-    refresh_token.expires_at = datetime.now() + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC)
+    refresh_token.expires_at = datetime.now(UTC) + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC)
     return refresh_token
 
 

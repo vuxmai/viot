@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from injector import inject
 
@@ -52,10 +52,9 @@ class PasswordResetService:
             raise InvalidResetPasswordTokenException
 
         # Check if token is expired
-        if (
-            password_reset.created_at + timedelta(seconds=FORGOT_PASSWORD_DURATION_SEC)
-            < datetime.now()
-        ):
+        if password_reset.created_at + timedelta(
+            seconds=FORGOT_PASSWORD_DURATION_SEC
+        ) < datetime.now(UTC):
             raise ResetPasswordTokenExpiredException
 
         user = await self._user_repository.find_by_email(email=password_reset.email)

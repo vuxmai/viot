@@ -1,6 +1,6 @@
 import logging
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from injector import inject
@@ -53,8 +53,7 @@ class AuthService:
                 obj=RefreshToken(
                     user_id=user.id,
                     token=uuid.uuid4().hex,
-                    expires_at=datetime.now().replace(tzinfo=None)
-                    + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC),
+                    expires_at=datetime.now(UTC) + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC),
                 )
             )
         ).token
@@ -94,7 +93,7 @@ class AuthService:
     async def logout(self, *, refresh_token: str) -> None:
         try:
             await self._refresh_token_repository.update_token_expires_at(
-                token=refresh_token, expires_at=datetime.now()
+                token=refresh_token, expires_at=datetime.now(UTC)
             )
         except Exception as e:
             logger.warning(f"Failed to logout: {e}")
@@ -105,7 +104,7 @@ class AuthService:
             payload = parse_jwt_token(token)
             user_id = UUID(payload.get("user_id"))
             await self._user_repository.update_email_verified_at(
-                user_id=user_id, email_verified_at=datetime.now().replace(tzinfo=None)
+                user_id=user_id, email_verified_at=datetime.now(UTC)
             )
         except Exception as e:
             logger.warning(f"Failed to verify email: {e}")

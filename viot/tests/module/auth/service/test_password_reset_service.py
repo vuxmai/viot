@@ -62,7 +62,9 @@ async def test_reset_password_correctly(
     mock_password_reset_repository.delete.return_value = None
 
     # when
-    dto = ResetPasswordDto(token=mock_password_reset.token, password=mock_user.raw_password)
+    dto = ResetPasswordDto(
+        token=mock_password_reset.token, password=mock_user.raw_password + "diff"
+    )
     await password_reset_service.reset_password(reset_password_dto=dto)
 
     # then

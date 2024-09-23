@@ -46,3 +46,8 @@ class InvalidResetPasswordTokenException(BadRequestException):
 class ResetPasswordTokenExpiredException(BadRequestException):
     def __init__(self) -> None:
         super().__init__(message="The provided reset password token has expired")
+
+
+class DuplicatePasswordException(BadRequestException):
+    def __init__(self) -> None:
+        super().__init__(message="New password must be different from the current password")
