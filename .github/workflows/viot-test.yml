@@ -29,14 +29,22 @@ jobs:
         with:
           python-version: '3.11'
 
-      - run: docker compose up -d
+      - name: Install Poetry
+        run: |
+          pip install poetry
+          poetry config virtualenvs.create false
+
+      - name: Install dependencies
+        working-directory: ./viot
+        run: poetry install --no-interaction --no-root
 
       - name: Lint
-        run: docker compose exec -T viot-api bash /viot/scripts/lint.sh
+        working-directory: ./viot
+        run: bash ./scripts/lint.sh
 
-      - name: Run tests
-        run: docker compose exec -T viot-api bash /viot/scripts/test.sh
-      - run: docker compose down -v --remove-orphans
+      - name: Tests
+        working-directory: ./viot
+        run: bash ./scripts/test.sh --cov-report=xml
 
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
