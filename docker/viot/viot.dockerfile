@@ -29,6 +29,7 @@ COPY --from=builder /tmp/requirements.txt /viot/requirements.txt
 RUN pip install --no-cache-dir -r /viot/requirements.txt
 
 COPY ${PROJECT_DIR}/app /viot/app
+COPY ${PROJECT_DIR}/alembic.ini /viot/alembic.ini
 
 ENV PYTHONPATH=':$PYTHONPATH:.'
 
