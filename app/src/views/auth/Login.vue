@@ -1,41 +1,31 @@
 <script setup lang="ts">
-import LoginBackground from '@/assets/images/login-background.png'
 import { FormField } from '@/components/ui/form'
 import { useLoginMutation } from '@/composables/mutations/use-login-mutation'
-import { PASSWORD_REGEX } from '@/constants'
+import { useUserStore } from '@/stores'
 import { toTypedSchema } from '@vee-validate/zod'
 import { LoaderCircle } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { useI18n } from 'vue-i18n'
-import { z } from 'zod'
+import { loginSchema } from './schemas'
 
 const { t } = useI18n()
 
-const formSchema = toTypedSchema(
-  z.object({
-    email: z.string().email('Invalid email'),
-    password: z
-      .string()
-      .regex(
-        PASSWORD_REGEX,
-        'Password must be 8-20 characters, include a number and a special character'
-      )
-  })
-)
 const router = useRouter()
 const { mutate: loginMutate, isPending } = useLoginMutation()
+const { setAccessToken } = useUserStore()
 
 const { isFieldDirty, handleSubmit } = useForm({
-  validationSchema: formSchema
+  validationSchema: toTypedSchema(loginSchema)
 })
 
 const onSubmit = handleSubmit((values) => {
   loginMutate(values, {
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setAccessToken(data.accessToken)
+      toast.success({ message: t('login.success') })
       setTimeout(() => {
         router.push('/')
       }, 300)
-      toast.success({ message: t('login.success') })
     },
     onError: (error) => {
       toast.error({ message: error.response?.data.message })
@@ -45,12 +35,7 @@ const onSubmit = handleSubmit((values) => {
 </script>
 
 <template>
-  <div class="flex justify-center w-full min-w-[600px] min-h-screen">
-    <img
-      :src="LoginBackground"
-      alt="login image"
-      class="absolute inset-0 object-cover w-full h-full -z-10"
-    >
+  <div class="flex justify-center w-full min-w-[600px] min-h-screen bg-gray-200">
     <div class="flex items-center justify-center">
       <Card class="max-w-sm md:min-w-[400px] md:min-h-[400px] mx-auto border-none">
         <CardHeader>

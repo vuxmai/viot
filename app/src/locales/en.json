@@ -9,6 +9,9 @@
   "register": {
     "title": "Register"
   },
+  "registerSuccess": {
+    "title": "Register Success"
+  },
   "dashboard": {
     "title": "Dashboard"
   }

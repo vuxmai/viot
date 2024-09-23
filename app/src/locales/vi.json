@@ -9,6 +9,9 @@
   "register": {
     "title": "Đăng ký"
   },
+  "registerSuccess": {
+    "title": "Đăng ký thành công"
+  },
   "dashboard": {
     "title": "Trang chủ"
   }

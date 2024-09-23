@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('@/layouts/BaseLayout.vue'),
+    component: () => import('@/layouts/DashboardLayout.vue'),
     redirect: '/dashboard',
     meta: {
       title: () => i18n.global.t('dashboard.title')
@@ -37,6 +37,14 @@ const routes: RouteRecordRaw[] = [
     path: '/register',
     name: 'Register',
     component: () => import('@/views/auth/Register.vue'),
+    meta: {
+      title: () => i18n.global.t('register.title')
+    }
+  },
+  {
+    path: '/register-success',
+    name: 'RegisterSuccess',
+    component: () => import('@/views/auth/RegisterSuccess.vue'),
     meta: {
       title: () => i18n.global.t('register.title')
     }

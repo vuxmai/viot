@@ -1,6 +1,6 @@
 // eslint.config.mjs
 import antfu from '@antfu/eslint-config'
-import vueI18n from '@intlify/eslint-plugin-vue-i18n'
+// import vueI18n from '@intlify/eslint-plugin-vue-i18n'
 
 export default antfu(
   {
@@ -24,25 +24,25 @@ export default antfu(
       // eslint-disable-next-line node/prefer-global/process
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
     }
-  },
+  }
 
   // I18n
-  ...vueI18n.configs['flat/recommended'],
-  {
-    rules: {
-      '@intlify/vue-i18n/no-dynamic-keys': 'error',
-      '@intlify/vue-i18n/no-unused-keys': [
-        'error',
-        {
-          extensions: ['.ts', '.vue']
-        }
-      ]
-    },
-    settings: {
-      'vue-i18n': {
-        localeDir: 'locales/*.{json}',
-        messageSyntaxVersion: '^10.0.1'
-      }
-    }
-  }
+//   ...vueI18n.configs['flat/recommended'],
+//   {
+//     rules: {
+//       '@intlify/vue-i18n/no-dynamic-keys': 'error',
+//       '@intlify/vue-i18n/no-unused-keys': [
+//         'error',
+//         {
+//           extensions: ['.ts', '.vue']
+//         }
+//       ]
+//     },
+//     settings: {
+//       'vue-i18n': {
+//         localeDir: 'locales/*.{json}',
+//         messageSyntaxVersion: '^10.0.1'
+//       }
+//     }
+//   }
 )

@@ -37,3 +37,8 @@ pnpm build
 ```sh
 pnpm lint
 ```
+
+### Using Vite Proxy
+
+- Copy `.env.example` to `.env`
+- Run `pnpm dev`
