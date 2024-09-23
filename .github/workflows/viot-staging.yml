@@ -27,13 +27,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Push Viot API docker image staging to GHCR
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/viot/viot.dockerfile
           push: true
-          tags: ghcr.io/viot/api:staging
+          tags: ghcr.io/${{ github.repository_owner }}/viot/api:staging
 
       - name: Push Viot Celery docker image staging to GHCR
         uses: docker/build-push-action@v5
@@ -41,4 +44,4 @@ jobs:
           context: .
           file: ./docker/viot-celery/celery.dockerfile
           push: true
-          tags: ghcr.io/viot/celery:staging
+          tags: ghcr.io/${{ github.repository_owner }}/viot/celery:staging
