@@ -1,0 +1,18 @@
+{
+  "error": {
+    "sessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "success": "Đăng nhập thành công"
+  },
+  "register": {
+    "title": "Đăng ký"
+  },
+  "registerSuccess": {
+    "title": "Đăng ký thành công"
+  },
+  "dashboard": {
+    "title": "Trang chủ"
+  }
+}

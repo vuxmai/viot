@@ -1,0 +1,18 @@
+{
+  "error": {
+    "sessionExpired": "Session expired. Please login again."
+  },
+  "login": {
+    "title": "Login",
+    "success": "Login successful"
+  },
+  "register": {
+    "title": "Register"
+  },
+  "registerSuccess": {
+    "title": "Register Success"
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  }
+}

@@ -26,5 +26,10 @@ QueryStr = Annotated[str, StringConstraints(pattern=r"^[ -~]+$", min_length=1)]
 
 
 # Paging
-PageQuery = Annotated[int, Query(ge=1, alias="page")]
-PageSizeQuery = Annotated[int, Query(ge=1, alias="pageSize")]
+PageQuery = Annotated[
+    int, Query(ge=1, alias="page", description="Maximum amount of entities in a one page")
+]
+PageSizeQuery = Annotated[
+    int,
+    Query(ge=1, le=50, alias="pageSize", description="Sequence number of page starting from 0"),
+]
