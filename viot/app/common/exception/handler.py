@@ -20,9 +20,9 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse[ErrorDto]:
         logger.debug(f"Validation error: {exc.errors()}")
         return JSONResponse(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_400_BAD_REQUEST,
             content=ErrorDto(
-                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status=status.HTTP_400_BAD_REQUEST,
                 error_code=MessageError.VALIDATION_ERROR,
                 message=jsonable_encoder(exc.errors()),
             ),
