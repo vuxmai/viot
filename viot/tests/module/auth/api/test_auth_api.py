@@ -31,7 +31,7 @@ async def test_login_200(client: AsyncClient, user_factory: Any) -> None:
     assert response.cookies.get("refreshToken")
 
 
-async def test_login_422_when_invalid_password(client: AsyncClient) -> None:
+async def test_login_400_when_invalid_password(client: AsyncClient) -> None:
     # given
 
     # when
@@ -41,7 +41,7 @@ async def test_login_422_when_invalid_password(client: AsyncClient) -> None:
     )
 
     # then
-    assert response.status_code == 422
+    assert response.status_code == 400
 
 
 async def test_login_401_when_wrong_password(client: AsyncClient, user_factory: Any) -> None:
