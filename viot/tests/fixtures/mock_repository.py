@@ -9,7 +9,6 @@ from app.module.team.repository.team_invitation_repository import (
     TeamInvitationRepository,
 )
 from app.module.team.repository.team_repository import TeamRepository
-from app.module.team.repository.user_team_repository import UserTeamRepository
 
 
 @pytest.fixture
@@ -30,11 +29,6 @@ def mock_user_repository() -> AsyncMock:
 @pytest.fixture
 def mock_team_repository() -> AsyncMock:
     return AsyncMock(spec=TeamRepository)
-
-
-@pytest.fixture
-def mock_user_team_repository() -> AsyncMock:
-    return AsyncMock(spec=UserTeamRepository)
 
 
 @pytest.fixture

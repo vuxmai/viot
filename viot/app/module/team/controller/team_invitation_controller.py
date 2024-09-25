@@ -11,8 +11,6 @@ from app.common.fastapi.serializer import JSONResponse
 from app.database.dependency import DependSession
 from app.module.auth.dependency import DependCurrentUser
 from app.module.auth.model.user import User
-from app.module.team.constants import TeamRole
-from app.module.team.dependency import RequireAnyTeamRole
 
 from ..dto.team_invitation_dto import (
     PagingTeamInvitationDto,
@@ -39,9 +37,7 @@ class TeamInvitationController(Controller):
         status_code=200,
         summary="Get all team invitations",
         responses={200: {"model": PagingTeamInvitationDto}},
-        dependencies=[
-            RequireAnyTeamRole({TeamRole.MEMBER}),
-        ],
+        dependencies=[],
     )
     async def get_all_team_invitations(
         self,
@@ -61,9 +57,7 @@ class TeamInvitationController(Controller):
         summary="Create a team invitation",
         status_code=201,
         responses={201: {"model": TeamInvitationDto}},
-        dependencies=[
-            RequireAnyTeamRole({TeamRole.OWNER, TeamRole.ADMIN}),
-        ],
+        dependencies=[],
     )
     async def create_team_invitation(
         self,
@@ -84,9 +78,7 @@ class TeamInvitationController(Controller):
         "/{team_id}/invitations/revoke/{invitation_id}",
         status_code=204,
         summary="Revoke a team invitation",
-        dependencies=[
-            RequireAnyTeamRole({TeamRole.OWNER, TeamRole.ADMIN}),
-        ],
+        dependencies=[],
     )
     async def revoke_team_invitation(
         self,
