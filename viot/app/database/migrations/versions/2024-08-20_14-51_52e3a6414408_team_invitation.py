@@ -28,11 +28,8 @@ def upgrade() -> None:
         sa.Column("email", sa.TEXT(), nullable=False),
         sa.Column("role", sa.TEXT(), nullable=False),
         sa.Column("token", sa.TEXT(), nullable=False),
-        sa.Column("created_at", sa.DateTime(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ["inviter_id"],
-            ["users.id"],
-        ),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.ForeignKeyConstraint(["inviter_id"], ["users.id"]),
         sa.ForeignKeyConstraint(["team_id"], ["teams.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )

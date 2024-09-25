@@ -1,11 +1,10 @@
 from datetime import datetime
 
 from sqlalchemy import TEXT, Boolean, DateTime, LargeBinary
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.base import Base
 from app.database.mixin import DateTimeMixin, UUIDPrimaryKey
-from app.module.team.model.team import Team
 
 from ..constants import ViotUserRole
 
@@ -21,7 +20,3 @@ class User(Base, DateTimeMixin):
     password: Mapped[bytes] = mapped_column(LargeBinary)
     role: Mapped[ViotUserRole] = mapped_column(TEXT)
     disabled: Mapped[bool] = mapped_column(Boolean, default=False)
-
-    teams: Mapped[list[Team]] = relationship(
-        secondary="users_teams", back_populates="users", init=False
-    )
