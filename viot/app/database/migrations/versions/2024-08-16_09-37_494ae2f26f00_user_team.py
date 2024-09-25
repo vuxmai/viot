@@ -49,15 +49,6 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_teams_slug"), "teams", ["slug"], unique=True)
-    op.create_table(
-        "users_teams",
-        sa.Column("user_id", sa.UUID(), nullable=False),
-        sa.Column("team_id", sa.UUID(), nullable=False),
-        sa.Column("role", sa.TEXT(), nullable=False),
-        sa.ForeignKeyConstraint(["team_id"], ["teams.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("user_id", "team_id"),
-    )
     # ### end Alembic commands ###
 
 
