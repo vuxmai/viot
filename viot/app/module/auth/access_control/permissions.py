@@ -13,10 +13,10 @@ class TeamProfilePermissions(PermissionCategory):
         "Read team profile",
         "Permission to read the profile of a team.",
     )
-    UPDATE = Permission(
-        f"{_PREFIX}:update",
-        "Update team profile",
-        "Permission to update the profile of a team.",
+    MANAGE = Permission(
+        f"{_PREFIX}:manage",
+        "Manage team profile",
+        "Permission to manage the profile of a team.",
     )
     DELETE = Permission(
         f"{_PREFIX}:delete",
@@ -26,7 +26,7 @@ class TeamProfilePermissions(PermissionCategory):
 
     @classmethod
     def get_permissions(cls) -> list[Permission]:
-        return [cls.READ, cls.UPDATE]
+        return [cls.READ, cls.MANAGE]
 
 
 class TeamMemberPermissions(PermissionCategory):
@@ -69,10 +69,10 @@ class TeamInvitationPermissions(PermissionCategory):
         "Read Invitation",
         "Permission to read the invitations of a team.",
     )
-    CREATE = Permission(
-        f"{_PREFIX}:create",
-        "Create Invitation",
-        "Permission to create an invitation for a team.",
+    MANAGE = Permission(
+        f"{_PREFIX}:manage",
+        "Manage Invitation",
+        "Permission to manage an invitation for a team.",
     )
     REVOKE = Permission(
         f"{_PREFIX}:revoke",
@@ -82,4 +82,4 @@ class TeamInvitationPermissions(PermissionCategory):
 
     @classmethod
     def get_permissions(cls) -> list[Permission]:
-        return [cls.READ, cls.CREATE, cls.REVOKE]
+        return [cls.READ, cls.MANAGE, cls.REVOKE]
