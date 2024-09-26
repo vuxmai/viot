@@ -12,6 +12,8 @@ from app.common.fastapi.serializer import JSONResponse
 from app.database.dependency import DependSession
 from app.database.repository.pagination import SortDirection
 
+from ..constants import TeamRole
+from ..dependency import RequireAnyTeamRole
 from ..dto.member_dto import MemberPagingDto
 from ..service.member_service import MemberService
 
@@ -29,6 +31,7 @@ class MemberController(Controller):
         summary="Get paging members",
         status_code=200,
         responses={200: {"model": MemberPagingDto}},
+        dependencies=[RequireAnyTeamRole({TeamRole.OWNER, TeamRole.ADMIN, TeamRole.MEMBER})],
     )
     async def get_paging_members(
         self,
