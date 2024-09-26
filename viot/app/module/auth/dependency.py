@@ -1,12 +1,14 @@
 from collections.abc import Callable
 from functools import lru_cache
-from typing import Annotated
+from typing import Annotated, Any
+from uuid import UUID
 
-from fastapi import Depends
+from fastapi import Depends, Path
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app import injector
 
+from .access_control import Permission
 from .constants import ViotUserRole
 from .exception.auth_exception import (
     UnauthorizedException,
@@ -16,6 +18,7 @@ from .exception.auth_exception import (
 )
 from .model.user import User
 from .repository.user_repository import UserRepository
+from .service.permission_service import PermissionService
 from .utils.token_utils import AccessToken, parse_access_token
 
 _http_bearer = HTTPBearer(auto_error=False)
@@ -45,10 +48,10 @@ async def get_current_user(
     user = await user_repository.find(id=access_token.user_id)
     if user is None:
         raise UnauthorizedException
-    if user.disabled:
-        raise UserDisabledException
     if user.email_verified_at is None:
         raise UserNotVerifiedException
+    if user.disabled:
+        raise UserDisabledException
     return user
 
 
@@ -81,3 +84,42 @@ def RequireGlobalRole(role: ViotUserRole) -> Callable[[User], User]:
 
 
 DependCurrentUser = Depends(get_current_user)
+
+
+@lru_cache
+def get_permission_service() -> PermissionService:
+    return injector.get(PermissionService)
+
+
+def RequireTeamPermission(permission: Permission) -> Any:
+    """
+    Create a dependency that requires a specific team permission.
+
+    This function returns a FastAPI dependency that checks if the current user
+    has the specified team permission. If the user doesn't have the required
+    permission, it raises a `ResourceAccessDeniedException`.
+
+    Raises:
+        ResourceAccessDeniedException: If the user doesn't have the required
+            permission.
+
+    Usage:
+    ```python
+        @app.get("/team/{team_id}/resource")
+        async def team_resource(
+            user: User = RequireUserTeamPermission(TeamResourcePermission.VIEW)
+        ):
+            return {"message": "Access granted"}
+    ```
+    """
+
+    async def require_team_permission(
+        user: Annotated[User, Depends(get_current_user)],
+        team_id: Annotated[UUID, Path(...)],
+        permission_service: Annotated[PermissionService, Depends(get_permission_service)],
+    ) -> None:
+        await permission_service.validate_user_access_team_resource(
+            user_id=user.id, team_id=team_id, permission_scope=permission.scope
+        )
+
+    return Depends(require_team_permission)
