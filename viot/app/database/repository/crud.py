@@ -14,6 +14,16 @@ TPrimaryKey = TypeVar("TPrimaryKey")
 TBaseModel = TypeVar("TBaseModel", bound=Base)
 
 
+class AsyncSqlalchemyRepository:
+    @inject
+    def __init__(self, session_ctx: ContextVar[AsyncSession]):
+        self._session_ctx = session_ctx
+
+    @property
+    def session(self) -> AsyncSession:
+        return self._session_ctx.get()
+
+
 class ICrudRepository(Generic[TModel, TPrimaryKey], ABC):
     @abstractmethod
     async def find(self, id: TPrimaryKey) -> TModel | None:
@@ -32,7 +42,7 @@ class ICrudRepository(Generic[TModel, TPrimaryKey], ABC):
         """Delete an object from the repository."""
 
 
-class CrudRepository(ICrudRepository[TBaseModel, TPrimaryKey]):
+class CrudRepository(AsyncSqlalchemyRepository, ICrudRepository[TBaseModel, TPrimaryKey]):
     """
     A repository that implements the CRUD operations.
 
@@ -47,20 +57,12 @@ class CrudRepository(ICrudRepository[TBaseModel, TPrimaryKey]):
     ```
     """
 
-    @inject
-    def __init__(self, session_ctx: ContextVar[AsyncSession]):
-        self._session_ctx = session_ctx
-
     def __new__(
         cls: type[Any], *args: Any, **kwargs: Any
     ) -> "CrudRepository[TBaseModel, TPrimaryKey]":
         if not hasattr(cls, "_model"):
             cls._model = get_args(cls.__orig_bases__[0])[0]
         return super().__new__(cls)  # type: ignore
-
-    @property
-    def session(self) -> AsyncSession:
-        return self._session_ctx.get()
 
     async def find(self, id: TPrimaryKey) -> TBaseModel | None:
         return await self.session.get(self._model, id, populate_existing=True)
