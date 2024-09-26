@@ -81,12 +81,12 @@ class UserController(Controller):
 
     @delete(
         "/me",
-        summary="Delete user",
+        summary="Delete current user",
         status_code=204,
     )
-    async def delete_user(
+    async def delete_current_user(
         self, *, current_user: Annotated[User, DependCurrentUser]
     ) -> JSONResponse[None]:
         """Delete current user"""
-        await self._user_service.delete_user(user_id=current_user.id)
+        await self._user_service.delete_user_by_id(user_id=current_user.id)
         return JSONResponse.no_content()

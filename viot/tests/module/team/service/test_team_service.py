@@ -179,22 +179,6 @@ async def test_update_team_correctly_when_slug_already_exists(
 async def test_delete_team_correctly(
     team_service: TeamService, mock_team_repository: AsyncMock, mock_team: Mock
 ) -> None:
-    mock_team_repository.find.return_value = mock_team
-    mock_team_repository.delete.return_value = None
+    await team_service.delete_team_by_id(team_id=mock_team.id)
 
-    await team_service.delete_team(team_id=mock_team.id)
-
-    mock_team_repository.find.assert_called_once_with(mock_team.id)
-    mock_team_repository.delete.assert_called_once_with(mock_team)
-
-
-async def test_delete_team_correctly_when_team_not_found(
-    team_service: TeamService, mock_team_repository: AsyncMock
-) -> None:
-    team_id = uuid4()
-    mock_team_repository.find.return_value = None
-
-    with pytest.raises(TeamNotFoundException):
-        await team_service.delete_team(team_id=team_id)
-
-    mock_team_repository.find.assert_called_once_with(team_id)
+    mock_team_repository.delete_by_id.assert_called_once_with(mock_team.id)

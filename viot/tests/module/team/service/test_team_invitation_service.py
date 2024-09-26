@@ -234,38 +234,33 @@ async def test_accept_team_invitation_raises_when_invitee_not_found(
     mock_team_invitation_repository.delete.assert_called_once_with(mock_team_invitation)
 
 
-async def test_decline_team_invitation_by_token_correctly(
+async def test_decline_team_invitation_correctly(
     team_invitation_service: TeamInvitationService,
     mock_team_invitation_repository: AsyncMock,
     mock_team_invitation: Mock,
 ) -> None:
     # given
-    mock_team_invitation_repository.find_by_token.return_value = mock_team_invitation
+    mock_team_invitation_repository.delete_by_token.return_value = None
 
     # when
-    await team_invitation_service._delete_team_invitation_by_token(mock_team_invitation.token)  # type: ignore
+    await team_invitation_service.decline_team_invitation(token=mock_team_invitation.token)
 
     # then
-    mock_team_invitation_repository.find_by_token.assert_called_once_with(
+    mock_team_invitation_repository.delete_by_token.assert_called_once_with(
         mock_team_invitation.token
     )
-    mock_team_invitation_repository.delete.assert_called_once_with(mock_team_invitation)
 
 
-async def test_decline_team_invitation_by_token_raises_when_invitation_not_found(
+async def test_revoke_team_invitation_by_id_correctly(
     team_invitation_service: TeamInvitationService,
     mock_team_invitation_repository: AsyncMock,
     mock_team_invitation: Mock,
 ) -> None:
     # given
-    mock_team_invitation_repository.find_by_token.return_value = None
+    mock_team_invitation_repository.delete_by_id.return_value = None
 
     # when
-    with pytest.raises(TeamInvitationNotFoundException):
-        await team_invitation_service._delete_team_invitation_by_token(mock_team_invitation.token)  # type: ignore
+    await team_invitation_service.revoke_team_invitation_by_id(id=mock_team_invitation.id)
 
     # then
-    mock_team_invitation_repository.find_by_token.assert_called_once_with(
-        mock_team_invitation.token
-    )
-    mock_team_invitation_repository.delete.assert_not_called()
+    mock_team_invitation_repository.delete_by_id.assert_called_once_with(mock_team_invitation.id)

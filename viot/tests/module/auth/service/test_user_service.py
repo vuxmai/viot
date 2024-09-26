@@ -86,18 +86,8 @@ async def test_update_user_raises_when_user_not_found(
 async def test_delete_user_correctly(
     user_service: UserService, mock_user_repository: AsyncMock, mock_user: Mock
 ) -> None:
-    mock_user_repository.find.return_value = mock_user
-    mock_user_repository.delete.return_value = None
+    # when
+    await user_service.delete_user_by_id(user_id=mock_user.id)
 
-    await user_service.delete_user(user_id=mock_user.id)
-
-    mock_user_repository.delete.assert_called_once_with(mock_user)
-
-
-async def test_delete_user_raises_when_user_not_found(
-    user_service: UserService, mock_user_repository: Mock
-) -> None:
-    mock_user_repository.find.return_value = None
-
-    with pytest.raises(UserNotFoundException):
-        await user_service.delete_user(user_id=uuid4())
+    # then
+    mock_user_repository.delete_by_id.assert_called_once_with(mock_user.id)

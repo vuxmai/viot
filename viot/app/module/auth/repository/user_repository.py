@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import exists, select, update
+from sqlalchemy import delete, exists, select, update
 
 from app.database.repository import CrudRepository
 
@@ -28,4 +28,8 @@ class UserRepository(CrudRepository[User, UUID]):
 
     async def update_email_verified_at(self, user_id: UUID, email_verified_at: datetime) -> None:
         stmt = update(User).where(User.id == user_id).values(email_verified_at=email_verified_at)
+        await self.session.execute(stmt)
+
+    async def delete_by_id(self, id: UUID) -> None:
+        stmt = delete(User).where(User.id == id)
         await self.session.execute(stmt)
