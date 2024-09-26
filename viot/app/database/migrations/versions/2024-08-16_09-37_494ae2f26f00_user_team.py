@@ -26,12 +26,12 @@ def upgrade() -> None:
         sa.Column("first_name", sa.TEXT(), nullable=False),
         sa.Column("last_name", sa.TEXT(), nullable=False),
         sa.Column("email", sa.TEXT(), nullable=False),
-        sa.Column("email_verified_at", sa.DateTime(), nullable=True),
+        sa.Column("email_verified_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("password", sa.LargeBinary(), nullable=False),
         sa.Column("role", sa.TEXT(), nullable=False),
         sa.Column("disabled", sa.Boolean(), nullable=False),
-        sa.Column("created_at", sa.DateTime(), nullable=False),
-        sa.Column("updated_at", sa.DateTime(), nullable=True),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_users_email"), "users", ["email"], unique=True)
@@ -43,8 +43,8 @@ def upgrade() -> None:
         sa.Column("slug", sa.TEXT(), nullable=False),
         sa.Column("description", sa.TEXT(), nullable=True),
         sa.Column("default", sa.Boolean(), nullable=False),
-        sa.Column("created_at", sa.DateTime(), nullable=False),
-        sa.Column("updated_at", sa.DateTime(), nullable=True),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
         sa.ForeignKeyConstraint(["owner_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )

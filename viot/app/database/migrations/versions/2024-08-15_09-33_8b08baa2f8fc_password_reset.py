@@ -24,7 +24,7 @@ def upgrade() -> None:
         "password_resets",
         sa.Column("email", sa.TEXT(), nullable=False),
         sa.Column("token", sa.TEXT(), nullable=False),
-        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.PrimaryKeyConstraint("email"),
         sa.UniqueConstraint("token"),
     )
