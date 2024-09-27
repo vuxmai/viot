@@ -59,15 +59,15 @@ class TeamController(Controller):
 
     @delete(
         "/{team_id}",
-        summary="Delete team",
+        summary="Delete team by id",
         status_code=204,
         dependencies=[],
     )
-    async def delete_team(
+    async def delete_team_by_id(
         self,
         *,
         team_id: Annotated[UUID, Path(...)],
     ) -> JSONResponse[None]:
         """Delete a team"""
-        await self._team_service.delete_team(team_id=team_id)
+        await self._team_service.delete_team_by_id(team_id=team_id)
         return JSONResponse.no_content()

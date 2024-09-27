@@ -40,9 +40,5 @@ class UserService:
         user = await self._user_repository.save(user)
         return UserDto.model_validate(user)
 
-    async def delete_user(self, *, user_id: UUID) -> None:
-        user = await self._user_repository.find(user_id)
-        if not user:
-            raise UserNotFoundException
-
-        await self._user_repository.delete(user)
+    async def delete_user_by_id(self, *, user_id: UUID) -> None:
+        await self._user_repository.delete_by_id(user_id)

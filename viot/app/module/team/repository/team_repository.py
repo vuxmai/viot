@@ -1,9 +1,9 @@
 from uuid import UUID
 
 import msgspec
-from sqlalchemy import exists, select
+from sqlalchemy import delete, exists, select
 
-from app.database.repository import PageableRepository
+from app.database.repository import CrudRepository
 
 from ..model.team import Team
 from ..model.user_team import UserTeam
@@ -14,7 +14,7 @@ class TeamWithRole(msgspec.Struct, frozen=True):
     role: str
 
 
-class TeamRepository(PageableRepository[Team, UUID]):
+class TeamRepository(CrudRepository[Team, UUID]):
     async def find_teams_with_role_by_user_id(self, user_id: UUID) -> list[TeamWithRole]:
         stmt = select(Team, UserTeam.role).join(UserTeam).where(UserTeam.user_id == user_id)
         return [
@@ -29,3 +29,6 @@ class TeamRepository(PageableRepository[Team, UUID]):
     async def user_has_teams(self, user_id: UUID) -> bool:
         stmt = select(exists().where(UserTeam.user_id == user_id))
         return bool((await self.session.execute(stmt)).scalar())
+
+    async def delete_by_id(self, id: UUID) -> None:
+        await self.session.execute(delete(Team).where(Team.id == id))

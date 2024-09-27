@@ -14,6 +14,7 @@ from app.module.team.repository.team_invitation_repository import (
     TeamInvitationRepository,
 )
 from app.module.team.repository.team_repository import TeamRepository
+from app.module.team.service.member_service import MemberService
 from app.module.team.service.team_invitation_service import TeamInvitationService
 from app.module.team.service.team_service import TeamService
 
@@ -84,3 +85,8 @@ def team_invitation_service(
         user_repository=mock_user_repository,
         team_repository=mock_team_repository,
     )
+
+
+@pytest.fixture
+def member_service(mock_user_repository: UserRepository) -> MemberService:
+    return MemberService(user_repository=mock_user_repository)

@@ -66,9 +66,5 @@ class TeamService:
         team = await self._team_repository.save(team)
         return TeamDto.from_model(team)
 
-    async def delete_team(self, *, team_id: UUID) -> None:
-        team = await self._team_repository.find(team_id)
-        if not team:
-            raise TeamNotFoundException
-
-        await self._team_repository.delete(team)
+    async def delete_team_by_id(self, *, team_id: UUID) -> None:
+        await self._team_repository.delete_by_id(team_id)
