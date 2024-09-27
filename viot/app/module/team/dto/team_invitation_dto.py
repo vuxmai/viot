@@ -5,19 +5,19 @@ from pydantic import EmailStr, field_validator
 
 from app.common.dto import BaseInDto, BaseOutDto, PagingDto
 from app.database.repository import Page
-from app.module.team.constants import TeamRole
 
+from ..constants import TEAM_ROLE_OWNER
 from ..model.team_invitation import TeamInvitation
 
 
 class TeamInvitationCreateDto(BaseInDto):
     email: EmailStr
-    role: TeamRole
+    role: str
 
     @field_validator("role", mode="before")
-    def validate_role(cls, v: TeamRole) -> TeamRole:
-        if v == TeamRole.OWNER:
-            raise ValueError(f"{TeamRole.OWNER} role cannot be used for invitations")
+    def validate_role(cls, v: str) -> str:
+        if v == TEAM_ROLE_OWNER:
+            raise ValueError(f"{TEAM_ROLE_OWNER} role cannot be used for invitations")
         return v
 
 

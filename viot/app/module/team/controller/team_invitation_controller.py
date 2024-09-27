@@ -9,11 +9,10 @@ from app.common.controller import Controller
 from app.common.dto import PageQuery, PageSizeQuery
 from app.common.fastapi.serializer import JSONResponse
 from app.database.dependency import DependSession
-from app.module.auth.dependency import DependCurrentUser
+from app.module.auth.dependency import DependCurrentUser, RequireTeamPermission
 from app.module.auth.model.user import User
+from app.module.auth.permission import TeamInvitationPermission
 
-from ..constants import TeamRole
-from ..dependency import RequireAnyTeamRole
 from ..dto.team_invitation_dto import (
     PagingTeamInvitationDto,
     TeamInvitationAcceptDto,
@@ -39,7 +38,7 @@ class TeamInvitationController(Controller):
         status_code=200,
         summary="Get all team invitations",
         responses={200: {"model": PagingTeamInvitationDto}},
-        dependencies=[],
+        dependencies=[RequireTeamPermission(TeamInvitationPermission.READ)],
     )
     async def get_all_team_invitations(
         self,
@@ -59,7 +58,7 @@ class TeamInvitationController(Controller):
         summary="Create a team invitation",
         status_code=201,
         responses={201: {"model": TeamInvitationDto}},
-        dependencies=[],
+        dependencies=[RequireTeamPermission(TeamInvitationPermission.MANAGE)],
     )
     async def create_team_invitation(
         self,
@@ -80,7 +79,7 @@ class TeamInvitationController(Controller):
         "/{team_id}/invitations/revoke/{invitation_id}",
         status_code=204,
         summary="Revoke a team invitation",
-        dependencies=[],
+        dependencies=[RequireTeamPermission(TeamInvitationPermission.REVOKE)],
     )
     async def revoke_team_invitation(
         self,
