@@ -32,10 +32,12 @@ def upgrade() -> None:
     op.create_table(
         "roles",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column("team_id", sa.UUID(), nullable=False),
         sa.Column("name", sa.TEXT(), nullable=False),
         sa.Column("description", sa.TEXT(), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
+        sa.ForeignKeyConstraint(["team_id"], ["teams.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
@@ -52,9 +54,9 @@ def upgrade() -> None:
         sa.Column("team_id", sa.UUID(), nullable=False),
         sa.Column("role_id", sa.Integer(), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
-        sa.ForeignKeyConstraint(["role_id"], ["roles.id"]),
-        sa.ForeignKeyConstraint(["team_id"], ["teams.id"]),
-        sa.ForeignKeyConstraint(["user_id"], ["users.id"]),
+        sa.ForeignKeyConstraint(["role_id"], ["roles.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(["team_id"], ["teams.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("user_id", "role_id", "team_id"),
     )
     UserTeamPermissionScopeView.create(op)
@@ -67,6 +69,6 @@ def downgrade() -> None:
     op.drop_table("users_teams_roles")
     op.drop_table("roles_permissions")
     op.drop_table("roles")
-    op.drop_index(op.f("ix_permissions_slug"), table_name="permissions")
+    op.drop_index(op.f("ix_permissions_scope"), table_name="permissions")
     op.drop_table("permissions")
     # ### end Alembic commands ###

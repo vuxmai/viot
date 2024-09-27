@@ -16,9 +16,9 @@ from .role_permission import RolePermission
 class UserTeamRole(Base):
     __tablename__ = "users_teams_roles"
 
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
-    team_id: Mapped[UUID] = mapped_column(ForeignKey("teams.id"))
-    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    team_id: Mapped[UUID] = mapped_column(ForeignKey("teams.id", ondelete="CASCADE"))
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id", ondelete="CASCADE"))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default_factory=lambda: datetime.now(UTC), init=False
     )
