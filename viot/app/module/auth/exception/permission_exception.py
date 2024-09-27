@@ -9,9 +9,10 @@ class ResourceAccessDeniedException(PermissionDeniedException):
         )
 
 
-class PermissionNotFoundException(NotFoundException):
-    def __init__(self, permission_scope: str) -> None:
+class PermissionsNotFoundException(NotFoundException):
+    def __init__(self, permission_scopes: list[str]) -> None:
+        formatted_scopes = ", ".join(f"'{scope}'" for scope in permission_scopes)
         super().__init__(
             code="PERMISSION_NOT_FOUND",
-            message=f"Permission with scope {permission_scope} not found",
+            message=f"Permissions not found for the following scope(s): {formatted_scopes}",
         )

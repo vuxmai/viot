@@ -1,9 +1,17 @@
-from ..access_control import ALL_PERMISSIONS, ALL_PERMISSIONS_DICT, Permission
+from collections.abc import Sequence
+
+from sqlalchemy import select
+
+from app.database.repository import AsyncSqlalchemyRepository
+
+from ..model.permission import Permission
 
 
-class PermissionRepository:
-    def find_all_permissions(self) -> list[Permission]:
-        return ALL_PERMISSIONS
+class PermissionRepository(AsyncSqlalchemyRepository):
+    async def find_permissions_by_scopes(self, scopes: set[str]) -> Sequence[Permission]:
+        query = select(Permission).where(Permission.scope.in_(scopes))
+        return (await self.session.execute(query)).scalars().all()
 
-    def find_permission_by_scope(self, scope: str) -> Permission | None:
-        return ALL_PERMISSIONS_DICT.get(scope)
+    async def find_all(self) -> Sequence[Permission]:
+        query = select(Permission)
+        return (await self.session.execute(query)).scalars().all()

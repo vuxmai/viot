@@ -4,7 +4,7 @@ from sqlalchemy import select, text
 
 from app.database.repository import AsyncSqlalchemyRepository
 
-from ..model.user_team_role import UserTeamPermissionScopeView
+from ..model.user_team_role import UserTeamPermissionScopeView, UserTeamRole
 
 
 class UserTeamRoleRepository(AsyncSqlalchemyRepository):
@@ -26,3 +26,8 @@ class UserTeamRoleRepository(AsyncSqlalchemyRepository):
             stmt, {"user_id": user_id, "team_id": team_id, "permission_scope": permission_scope}
         )
         return bool(result.scalar())
+
+    async def save(self, obj: UserTeamRole) -> UserTeamRole:
+        self.session.add(obj)
+        await self.session.flush()
+        return obj
