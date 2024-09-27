@@ -10,7 +10,6 @@ from app.module.auth.model.password_reset import PasswordReset
 from app.module.auth.model.refresh_token import RefreshToken
 from app.module.auth.model.user import User
 from app.module.auth.utils.password_utils import hash_password
-from app.module.team.constants import TeamRole
 from app.module.team.model.team import Team
 from app.module.team.model.team_invitation import TeamInvitation
 
@@ -73,7 +72,7 @@ def mock_team_invitation(mock_team: Mock, mock_user: Mock) -> Mock:
     team_invitation.team_id = mock_team.id
     team_invitation.inviter_id = mock_user.id
     team_invitation.email = Faker().email()
-    team_invitation.role = TeamRole.MEMBER
+    team_invitation.role = "Member"
     team_invitation.token = uuid4().hex
     team_invitation.created_at = datetime.now(UTC)
     return team_invitation

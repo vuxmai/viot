@@ -38,9 +38,9 @@ class UserTeamPermissionScopeView(Base):
     __table__ = create_view(name=__tablename__, selectable=selectable, metadata=Base.metadata)
 
     @classmethod
-    def create(cls, op: Any):
+    def create(cls, op: Any) -> None:
         op.execute(CreateView(cls.__tablename__, cls.selectable))
 
     @classmethod
-    def drop(cls, op: Any):
+    def drop(cls, op: Any) -> None:
         op.execute(DropView(cls.__tablename__))
