@@ -7,8 +7,8 @@ from fastapi import Depends, Path
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app import injector
+from app.module.auth.permission import Permission
 
-from .access_control import Permission
 from .constants import ViotUserRole
 from .exception.auth_exception import (
     UnauthorizedException,

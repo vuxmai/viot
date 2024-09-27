@@ -3,6 +3,7 @@ from typing import Any, Generic, Literal, TypeVar
 
 import msgspec
 from sqlalchemy import Column, ColumnElement, and_, func, select
+from sqlalchemy.orm import InstrumentedAttribute
 from sqlalchemy.sql import Select, asc, desc
 
 from app.database.repository.crud import CrudRepository
@@ -33,9 +34,11 @@ TSelect = TypeVar("TSelect", bound=tuple[Any, ...])
 
 
 class Sort:
-    def __init__(self, field: str, direction: SortDirection = "asc") -> None:
+    def __init__(
+        self, field: str | InstrumentedAttribute[Any], direction: SortDirection = "asc"
+    ) -> None:
         self.field = field
-        self.direction = direction.lower()
+        self.direction = direction
 
     def apply(self, query: Select[TSelect]) -> Select[TSelect]:
         order_func = asc if self.direction == "asc" else desc
