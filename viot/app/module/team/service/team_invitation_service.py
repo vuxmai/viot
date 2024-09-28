@@ -8,7 +8,10 @@ from app.config import app_settings
 from app.database.repository import Filter, Pageable
 from app.module.auth.exception.user_exception import UserNotFoundException
 from app.module.auth.model.user import User
+from app.module.auth.model.user_team_role import UserTeamRole
+from app.module.auth.repository.role_repository import RoleRepository
 from app.module.auth.repository.user_repository import UserRepository
+from app.module.auth.repository.user_team_role_repository import UserTeamRoleRepository
 from app.module.email.service import IEmailService
 
 from ..constants import INVITATION_EXPIRATION_DAYS
@@ -21,12 +24,11 @@ from ..exception.team_exception import TeamNotFoundException
 from ..exception.team_invitation_exception import (
     TeamInvitationExpiredException,
     TeamInvitationNotFoundException,
+    TeamInvitationRoleNotFoundException,
 )
 from ..model.team_invitation import TeamInvitation
-from ..model.user_team import UserTeam
 from ..repository.team_invitation_repository import TeamInvitationRepository
 from ..repository.team_repository import TeamRepository
-from ..repository.user_team_repository import UserTeamRepository
 
 logger = logging.getLogger(__name__)
 
@@ -38,14 +40,16 @@ class TeamInvitationService:
         email_service: IEmailService,
         user_repository: UserRepository,
         team_repository: TeamRepository,
-        user_team_repository: UserTeamRepository,
         team_invitation_repository: TeamInvitationRepository,
+        user_team_role_repository: UserTeamRoleRepository,
+        role_repository: RoleRepository,
     ) -> None:
         self._email_service = email_service
         self._user_repository = user_repository
         self._team_repository = team_repository
-        self._user_team_repository = user_team_repository
         self._team_invitation_repository = team_invitation_repository
+        self._user_team_role_repository = user_team_role_repository
+        self._role_repository = role_repository
 
     async def get_pageable_team_invitations(
         self, team_id: UUID, page: int, page_size: int
@@ -101,9 +105,19 @@ class TeamInvitationService:
             await self._team_invitation_repository.delete(invitation)
             return
 
-        await self._user_team_repository.save(
-            UserTeam(user_id=invitee_id, team_id=invitation.team_id, role=invitation.role)
+        # Find role id with role name and team id
+        role_id = await self._role_repository.find_role_id_with_role_name_and_team_id(
+            team_id=invitation.team_id, role_name=invitation.role
         )
+        if role_id is None:
+            raise TeamInvitationRoleNotFoundException
+
+        # Assign role to user
+        await self._user_team_role_repository.save(
+            UserTeamRole(user_id=invitee_id, team_id=invitation.team_id, role_id=role_id)
+        )
+
+        # Delete invitation
         await self._team_invitation_repository.delete(invitation)
 
     async def decline_team_invitation(self, *, token: str) -> None:

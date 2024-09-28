@@ -4,7 +4,6 @@ import pytest
 
 from app.database.repository import Page
 from app.module.auth.exception.user_exception import UserNotFoundException
-from app.module.team.constants import TeamRole
 from app.module.team.dto.team_invitation_dto import TeamInvitationCreateDto
 from app.module.team.exception.team_exception import TeamNotFoundException
 from app.module.team.exception.team_invitation_exception import TeamInvitationNotFoundException
@@ -84,7 +83,7 @@ async def test_create_team_invitation_correctly(
     # when
     team_invitation_create_dto = TeamInvitationCreateDto(
         email="test@example.com",
-        role=TeamRole.MEMBER,
+        role="Member",
     )
     await team_invitation_service.create_team_invitation(
         team_id=mock_team.id,
@@ -114,7 +113,7 @@ async def test_create_team_invitation_raises_when_invitee_not_found(
     # when
     team_invitation_create_dto = TeamInvitationCreateDto(
         email="test@example.com",
-        role=TeamRole.MEMBER,
+        role="Member",
     )
     with pytest.raises(UserNotFoundException):
         await team_invitation_service.create_team_invitation(
@@ -146,7 +145,7 @@ async def test_create_team_invitation_raises_when_team_not_found(
     # when
     team_invitation_create_dto = TeamInvitationCreateDto(
         email="test@example.com",
-        role=TeamRole.MEMBER,
+        role="Member",
     )
     with pytest.raises(TeamNotFoundException):
         await team_invitation_service.create_team_invitation(
@@ -166,15 +165,12 @@ async def test_accept_team_invitation_correctly(
     team_invitation_service: TeamInvitationService,
     mock_team_invitation_repository: AsyncMock,
     mock_user_repository: AsyncMock,
-    mock_user_team_repository: AsyncMock,
-    mock_team: Mock,
     mock_user: Mock,
     mock_team_invitation: Mock,
 ) -> None:
     # given
     mock_team_invitation_repository.find_by_token.return_value = mock_team_invitation
     mock_user_repository.find_id_by_email.return_value = mock_user.id
-    mock_user_team_repository.save.return_value = None
 
     # when
     await team_invitation_service.accept_team_invitation(token=mock_team_invitation.token)
@@ -184,14 +180,12 @@ async def test_accept_team_invitation_correctly(
         mock_team_invitation.token
     )
     mock_user_repository.find_id_by_email.assert_called_once_with(mock_team_invitation.email)
-    mock_user_team_repository.save.assert_called_once()
     mock_team_invitation_repository.delete.assert_called_once_with(mock_team_invitation)
 
 
 async def test_accept_team_invitation_raises_when_invitation_not_found(
     team_invitation_service: TeamInvitationService,
     mock_team_invitation_repository: AsyncMock,
-    mock_user_team_repository: AsyncMock,
     mock_user_repository: AsyncMock,
     mock_team_invitation: Mock,
 ) -> None:
@@ -207,14 +201,12 @@ async def test_accept_team_invitation_raises_when_invitation_not_found(
         mock_team_invitation.token
     )
     mock_user_repository.find_id_by_email.assert_not_called()
-    mock_user_team_repository.save.assert_not_called()
     mock_team_invitation_repository.delete.assert_not_called()
 
 
 async def test_accept_team_invitation_raises_when_invitee_not_found(
     team_invitation_service: TeamInvitationService,
     mock_team_invitation_repository: AsyncMock,
-    mock_user_team_repository: AsyncMock,
     mock_user_repository: AsyncMock,
     mock_team_invitation: Mock,
 ) -> None:
@@ -230,7 +222,6 @@ async def test_accept_team_invitation_raises_when_invitee_not_found(
         mock_team_invitation.token
     )
     mock_user_repository.find_id_by_email.assert_called_once_with(mock_team_invitation.email)
-    mock_user_team_repository.save.assert_not_called()
     mock_team_invitation_repository.delete.assert_called_once_with(mock_team_invitation)
 
 

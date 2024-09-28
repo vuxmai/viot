@@ -5,9 +5,10 @@ import msgspec
 from sqlalchemy import delete, exists, func, select, update
 
 from app.database.repository import CrudRepository, Page, Pageable
-from app.module.team.model.user_team import UserTeam
 
+from ..model.role import Role
 from ..model.user import User
+from ..model.user_team_role import UserTeamRole
 
 
 class TeamMember(msgspec.Struct, frozen=True):
@@ -29,9 +30,10 @@ class UserRepository(CrudRepository[User, UUID]):
         self, team_id: UUID, pageable: Pageable
     ) -> Page[TeamMember]:
         stmt = (
-            select(User, UserTeam.role, UserTeam.joined_at)
-            .join(UserTeam)
-            .where(UserTeam.team_id == team_id)
+            select(User, Role.name, UserTeamRole.created_at)
+            .join(UserTeamRole, UserTeamRole.user_id == User.id)
+            .join(Role, Role.id == UserTeamRole.role_id)
+            .where(UserTeamRole.team_id == team_id)
         )
         query = pageable.apply(stmt, self._model)
         count_query = select(func.count()).select_from(

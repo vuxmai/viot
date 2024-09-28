@@ -8,11 +8,10 @@ from injector import inject
 from app.common.controller import Controller
 from app.common.fastapi.serializer import JSONResponse
 from app.database.dependency import DependSession
-from app.module.auth.dependency import DependCurrentUser
+from app.module.auth.dependency import DependCurrentUser, RequireTeamPermission
 from app.module.auth.model.user import User
+from app.module.auth.permission import TeamProfilePermission
 
-from ..constants import TeamRole
-from ..dependency import RequireAnyTeamRole
 from ..dto.team_dto import TeamCreateDto, TeamDto, TeamUpdateDto
 from ..service.team_service import TeamService
 
@@ -43,9 +42,7 @@ class TeamController(Controller):
         summary="Update team",
         status_code=200,
         responses={200: {"model": TeamDto}},
-        dependencies=[
-            RequireAnyTeamRole(TeamRole.OWNER),
-        ],
+        dependencies=[RequireTeamPermission(TeamProfilePermission.MANAGE)],
     )
     async def update_team(
         self,
@@ -65,9 +62,7 @@ class TeamController(Controller):
         "/{team_id}",
         summary="Delete team by id",
         status_code=204,
-        dependencies=[
-            RequireAnyTeamRole(TeamRole.OWNER),
-        ],
+        dependencies=[RequireTeamPermission(TeamProfilePermission.DELETE)],
     )
     async def delete_team_by_id(
         self,

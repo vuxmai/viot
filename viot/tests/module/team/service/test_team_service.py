@@ -84,9 +84,13 @@ async def test_generate_team_slug_correctly_when_non_unique_slug(
 
 
 async def test_create_team_correctly_when_create_default_team(
-    team_service: TeamService, mock_team_repository: AsyncMock, mock_team: Mock, mock_user: Mock
+    team_service: TeamService,
+    mock_team_repository: AsyncMock,
+    mock_team: Mock,
+    mock_user: Mock,
 ) -> None:
     mock_team_repository.user_has_teams.return_value = False
+
     with patch.object(TeamService, "_generate_team_slug", return_value="test-team"):
         mock_team.name = "Test team"
         mock_team.slug = "test-team"

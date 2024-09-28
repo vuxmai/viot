@@ -34,6 +34,7 @@ httptools = "^0.6.1"
 injector = "^0.22.0"
 classy-fastapi = "^0.6.1"
 flower = "^2.0.1"
+sqlalchemy-utils = "^0.41.2"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.7"

@@ -4,9 +4,10 @@ import msgspec
 from sqlalchemy import delete, exists, select
 
 from app.database.repository import CrudRepository
+from app.module.auth.model.role import Role
+from app.module.auth.model.user_team_role import UserTeamRole
 
 from ..model.team import Team
-from ..model.user_team import UserTeam
 
 
 class TeamWithRole(msgspec.Struct, frozen=True):
@@ -16,7 +17,12 @@ class TeamWithRole(msgspec.Struct, frozen=True):
 
 class TeamRepository(CrudRepository[Team, UUID]):
     async def find_teams_with_role_by_user_id(self, user_id: UUID) -> list[TeamWithRole]:
-        stmt = select(Team, UserTeam.role).join(UserTeam).where(UserTeam.user_id == user_id)
+        stmt = (
+            select(Team, Role.name)
+            .join(UserTeamRole, UserTeamRole.team_id == Team.id)
+            .join(Role, Role.id == UserTeamRole.role_id)
+            .where(UserTeamRole.user_id == user_id)
+        )
         return [
             TeamWithRole(team=team, role=role)
             for team, role in (await self.session.execute(stmt)).all()
@@ -27,8 +33,16 @@ class TeamRepository(CrudRepository[Team, UUID]):
         return bool((await self.session.execute(stmt)).scalar())
 
     async def user_has_teams(self, user_id: UUID) -> bool:
-        stmt = select(exists().where(UserTeam.user_id == user_id))
+        stmt = select(exists().where(UserTeamRole.user_id == user_id))
         return bool((await self.session.execute(stmt)).scalar())
 
     async def delete_by_id(self, id: UUID) -> None:
         await self.session.execute(delete(Team).where(Team.id == id))
+
+    async def delete_all_by_user_id(self, user_id: UUID) -> None:
+        stmt = (
+            delete(Team)
+            .where(Team.id == UserTeamRole.team_id)
+            .where(UserTeamRole.user_id == user_id)
+        )
+        await self.session.execute(stmt)
