@@ -52,7 +52,7 @@ class TeamRoleService:
             ]
         )
 
-        return RoleDto(**role.to_dict(), scopes=role_create_dto.scopes)
+        return RoleDto.from_model(role, role_create_dto.scopes)
 
     async def validate_permission_exists(self, scopes: set[str]) -> list[Permission]:
         logger.debug(f"Validating permissions: {scopes}")
