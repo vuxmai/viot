@@ -1,9 +1,15 @@
 from datetime import datetime
 from uuid import UUID
 
-from app.common.dto import BaseOutDto, PagingDto
+from pydantic import Field
+
+from app.common.dto import BaseInDto, BaseOutDto, PagingDto
 from app.database.repository.pagination import Page
 from app.module.auth.repository.user_repository import TeamMember
+
+
+class MemberUpdateDto(BaseInDto):
+    role_id: int | None = Field(None)
 
 
 class MemberDto(BaseOutDto):

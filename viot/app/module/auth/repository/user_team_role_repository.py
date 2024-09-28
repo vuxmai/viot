@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import select, text
+from sqlalchemy import select, text, update
 
 from app.database.repository import AsyncSqlalchemyRepository
 
@@ -31,3 +31,11 @@ class UserTeamRoleRepository(AsyncSqlalchemyRepository):
         self.session.add(obj)
         await self.session.flush()
         return obj
+
+    async def update_role_id(self, *, user_id: UUID, team_id: UUID, role_id: int) -> None:
+        stmt = (
+            update(UserTeamRole)
+            .where(UserTeamRole.user_id == user_id, UserTeamRole.team_id == team_id)
+            .values(role_id=role_id)
+        )
+        await self.session.execute(stmt)

@@ -106,7 +106,7 @@ class TeamInvitationService:
             return
 
         # Find role id with role name and team id
-        role_id = await self._role_repository.find_role_id_with_role_name_and_team_id(
+        role_id = await self._role_repository.find_role_id_by_role_name_and_team_id(
             team_id=invitation.team_id, role_name=invitation.role
         )
         if role_id is None:
