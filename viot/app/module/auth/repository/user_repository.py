@@ -11,7 +11,7 @@ from ..model.user import User
 from ..model.user_team_role import UserTeamRole
 
 
-class TeamMember(msgspec.Struct, frozen=True):
+class TeamMember(msgspec.Struct):
     user: User
     role: str
     joined_at: datetime
@@ -53,6 +53,21 @@ class UserRepository(CrudRepository[User, UUID]):
             page_size=pageable.page_size,
         )
 
+    async def find_user_by_id_and_team_id(self, user_id: UUID, team_id: UUID) -> TeamMember | None:
+        stmt = (
+            select(User, Role.name, UserTeamRole.created_at)
+            .join(UserTeamRole, UserTeamRole.user_id == User.id)
+            .join(Role, Role.id == UserTeamRole.role_id)
+            .where(UserTeamRole.team_id == team_id)
+            .where(User.id == user_id)
+        )
+        result = (await self.session.execute(stmt)).fetchone()
+        return (
+            TeamMember(user=result.user, role=result.role, joined_at=result.joined_at)
+            if result
+            else None
+        )
+
     async def exists_by_email(self, email: str) -> bool:
         stmt = select(exists().where(User.email == email))
         result = await self.session.execute(stmt)
@@ -68,4 +83,12 @@ class UserRepository(CrudRepository[User, UUID]):
 
     async def delete_by_id(self, id: UUID) -> None:
         stmt = delete(User).where(User.id == id)
+        await self.session.execute(stmt)
+
+    async def delete_user_by_id_and_team_id(self, user_id: UUID, team_id: UUID) -> None:
+        stmt = (
+            delete(UserTeamRole)
+            .where(UserTeamRole.user_id == user_id)
+            .where(UserTeamRole.team_id == team_id)
+        )
         await self.session.execute(stmt)
