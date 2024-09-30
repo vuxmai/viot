@@ -53,3 +53,21 @@ class TeamInvitationPermission:
     REVOKE = Permission(
         f"{_PREFIX}:revoke", "Revoke Invitation", "Permission to revoke an invitation for a team."
     )
+
+
+class TeamDevicePermission:
+    """
+    Permissions for team devices.
+    """
+
+    _PREFIX = "team:devices"
+
+    READ = Permission(
+        f"{_PREFIX}:read", "Read devices", "Permission to read the devices of a team."
+    )
+    MANAGE = Permission(
+        f"{_PREFIX}:manage", "Manage devices", "Permission to manage the devices of a team."
+    )
+    DELETE = Permission(
+        f"{_PREFIX}:delete", "Delete device", "Permission to delete a device from a team."
+    )
