@@ -10,6 +10,8 @@ from app.common.controller import Controller
 from app.common.dto.types import PageQuery, PageSizeQuery
 from app.common.fastapi.serializer import JSONResponse
 from app.database.dependency import DependSession
+from app.module.auth.dependency import RequireTeamPermission
+from app.module.auth.permission import TeamDevicePermission
 from app.module.device.service.device_service import DeviceService
 
 from ..constants import DeviceType
@@ -29,6 +31,7 @@ class DeviceController(Controller):
         summary="Get all devices belong to team",
         status_code=200,
         responses={200: {"model": PagingDeviceDto}},
+        dependencies=[RequireTeamPermission(TeamDevicePermission.READ)],
     )
     async def get_all_team_devices(
         self,
@@ -55,6 +58,7 @@ class DeviceController(Controller):
         summary="Get device by id",
         status_code=200,
         responses={200: {"model": DeviceDto}},
+        dependencies=[RequireTeamPermission(TeamDevicePermission.READ)],
     )
     async def get_device_by_id_and_team_id(
         self,
@@ -75,6 +79,7 @@ class DeviceController(Controller):
         summary="Create device",
         status_code=201,
         responses={201: {"model": DeviceDto}},
+        dependencies=[RequireTeamPermission(TeamDevicePermission.MANAGE)],
     )
     async def create_device(
         self, *, team_id: Annotated[UUID, Path(...)], device_create_dto: DeviceCreateDto
@@ -91,6 +96,7 @@ class DeviceController(Controller):
         "/{device_id}",
         summary="Delete device by id and team id",
         status_code=204,
+        dependencies=[RequireTeamPermission(TeamDevicePermission.DELETE)],
     )
     async def delete_device(
         self,
