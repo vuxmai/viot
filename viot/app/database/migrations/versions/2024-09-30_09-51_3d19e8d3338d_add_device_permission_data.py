@@ -23,8 +23,8 @@ from sqlalchemy import delete, insert, select
 from sqlalchemy.orm.session import Session
 
 from app.models import Permission, Role, RolePermission
+from app.module.auth.constants import TEAM_ROLE_OWNER
 from app.module.auth.permission import TeamDevicePermission
-from app.module.team.constants import TEAM_ROLE_OWNER
 
 # revision identifiers, used by Alembic.
 revision: str = "3d19e8d3338d"
@@ -34,7 +34,7 @@ depends_on: str | Sequence[str] | None = None
 
 
 permissions = [
-    Permission(scope=p.scope)
+    Permission(scope=p.scope, title=p.title, description=p.description)
     for p in [
         # Team Devices
         TeamDevicePermission.READ,
@@ -54,21 +54,23 @@ def upgrade() -> None:
     # Add all permissions to the database
     print("Adding permissions to the database")
     session.add_all(permissions)
-    session.commit()
+    session.flush()
 
     # Update team Owner role permissions
     print("Updating team Owner role permissions")
-    team_owner_ids = session.execute(role_owner_ids_stmt).scalars().all()
-    print("Team Owner role IDs:", team_owner_ids)
+    role_owner_ids = session.execute(role_owner_ids_stmt).scalars().all()
+    print("Team Owner role IDs:", role_owner_ids)
 
     values: list[dict[str, Any]] = []
     for permission in permissions:
-        for role_id in team_owner_ids:
+        for role_id in role_owner_ids:
             values.append({"role_id": role_id, "permission_id": permission.id})
 
-    stmt = insert(RolePermission).values(values)
-    session.execute(stmt)
+    if values:
+        stmt = insert(RolePermission).values(values)
+        session.execute(stmt)
 
+    session.commit()
     print("Data migration for team device permissions completed")
     # ### end Alembic commands ###
 
@@ -78,8 +80,8 @@ def downgrade() -> None:
     print("Starting data rollback for team device permissions")
     session = Session(bind=op.get_bind())
 
-    team_owner_ids = session.execute(role_owner_ids_stmt).scalars().all()
-    print("Team Owner role IDs:", team_owner_ids)
+    role_owner_ids = session.execute(role_owner_ids_stmt).scalars().all()
+    print("Team Owner role IDs:", role_owner_ids)
 
     scopes = [p.scope for p in permissions]
     permission_ids = (
@@ -88,7 +90,7 @@ def downgrade() -> None:
     print("Permission IDs:", permission_ids)
 
     stmt = delete(RolePermission).where(
-        RolePermission.role_id.in_(team_owner_ids),
+        RolePermission.role_id.in_(role_owner_ids),
         RolePermission.permission_id.in_(permission_ids),
     )
     session.execute(stmt)

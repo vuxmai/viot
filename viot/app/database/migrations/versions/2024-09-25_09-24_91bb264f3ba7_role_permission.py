@@ -26,6 +26,8 @@ def upgrade() -> None:
         "permissions",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("scope", sa.TEXT(), nullable=False),
+        sa.Column("title", sa.TEXT(), nullable=False),
+        sa.Column("description", sa.TEXT(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_permissions_scope"), "permissions", ["scope"], unique=True)
