@@ -38,14 +38,12 @@ def upgrade() -> None:
     op.create_table(
         "teams",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("owner_id", sa.UUID(), nullable=False),
         sa.Column("name", sa.TEXT(), nullable=False),
         sa.Column("slug", sa.TEXT(), nullable=False),
         sa.Column("description", sa.TEXT(), nullable=True),
         sa.Column("default", sa.Boolean(), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
-        sa.ForeignKeyConstraint(["owner_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_teams_slug"), "teams", ["slug"], unique=True)
