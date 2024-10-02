@@ -11,6 +11,12 @@ class RoleCreateDto(BaseInDto):
     scopes: set[str]
 
 
+class RoleUpdateDto(BaseInDto):
+    name: str
+    description: str
+    scopes: set[str]
+
+
 class RoleDto(BaseOutDto):
     id: int
     name: str

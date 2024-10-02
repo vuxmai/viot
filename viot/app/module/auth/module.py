@@ -1,6 +1,8 @@
 from injector import Binder, Module, SingletonScope
 
 from .controller.auth_controller import AuthController
+from .controller.permission_controller import PermissionController
+from .controller.team_role_controller import TeamRoleController
 from .controller.user_controller import UserController
 from .repository.password_reset_repository import PasswordResetRepository
 from .repository.refresh_token_repository import RefreshTokenRepository
@@ -10,6 +12,7 @@ from .repository.user_repository import UserRepository
 from .repository.user_team_role_repository import UserTeamRoleRepository
 from .service.auth_service import AuthService
 from .service.permission_service import PermissionService
+from .service.team_role_service import TeamRoleService
 from .service.user_service import UserService
 
 
@@ -25,6 +28,9 @@ class AuthModule(Module):
         binder.bind(AuthService, AuthService, SingletonScope)
         binder.bind(UserService, UserService, SingletonScope)
         binder.bind(PermissionService, PermissionService, SingletonScope)
+        binder.bind(TeamRoleService, TeamRoleService, SingletonScope)
 
         binder.bind(AuthController, AuthController, SingletonScope)
         binder.bind(UserController, UserController, SingletonScope)
+        binder.bind(TeamRoleController, TeamRoleController, SingletonScope)
+        binder.bind(PermissionController, PermissionController, SingletonScope)

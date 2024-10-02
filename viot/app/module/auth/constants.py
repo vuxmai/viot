@@ -1,6 +1,8 @@
 import re
 from enum import StrEnum
 
+from .permission import TeamProfilePermission, TeamRolePermission
+
 
 class ViotUserRole(StrEnum):
     ADMIN = "Admin"
@@ -34,3 +36,11 @@ MAX_ROLES_PER_TEAM = 5
 
 TEAM_ROLE_OWNER = "Owner"
 TEAM_ROLE_OWNER_DESCRIPTION = "Full control and ownership of the team"
+
+# Permission constants
+SENSITIVE_SCOPES = {
+    TeamProfilePermission.MANAGE.scope,
+    TeamProfilePermission.DELETE.scope,
+    TeamRolePermission.MANAGE.scope,
+    TeamRolePermission.DELETE.scope,
+}

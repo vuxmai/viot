@@ -4,13 +4,13 @@ from uuid import UUID
 from injector import inject
 from slugify import slugify
 
+from app.module.auth.constants import TEAM_ROLE_OWNER, TEAM_ROLE_OWNER_DESCRIPTION
 from app.module.auth.dto.role_dto import RoleCreateDto
 from app.module.auth.model.user_team_role import UserTeamRole
 from app.module.auth.repository.permission_repository import PermissionRepository
 from app.module.auth.repository.user_team_role_repository import UserTeamRoleRepository
 from app.module.auth.service.team_role_service import TeamRoleService
 
-from ..constants import TEAM_ROLE_OWNER, TEAM_ROLE_OWNER_DESCRIPTION
 from ..dto.team_dto import TeamCreateDto, TeamDto, TeamUpdateDto, TeamWithRoleDto
 from ..exception.team_exception import TeamNotFoundException, TeamSlugAlreadyExistsException
 from ..model.team import Team
