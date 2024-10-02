@@ -1,9 +1,10 @@
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
 
 from app.module.auth.exception.permission_exception import ResourceAccessDeniedException
+from app.module.auth.model.permission import Permission
 from app.module.auth.service.permission_service import PermissionService
 
 
@@ -13,8 +14,42 @@ def mock_user_team_role_repository() -> AsyncMock:
 
 
 @pytest.fixture
-def permission_service(mock_user_team_role_repository: AsyncMock) -> PermissionService:
-    return PermissionService(mock_user_team_role_repository)
+def mock_permission_repository() -> AsyncMock:
+    return AsyncMock()
+
+
+@pytest.fixture
+def permission_service(
+    mock_permission_repository: AsyncMock, mock_user_team_role_repository: AsyncMock
+) -> PermissionService:
+    return PermissionService(mock_permission_repository, mock_user_team_role_repository)
+
+
+@pytest.fixture
+def mock_permission() -> Mock:
+    permission = Mock(spec=Permission)
+    permission.id = 1
+    permission.scope = "test"
+    permission.title = "test"
+    permission.description = "test"
+    return permission
+
+
+async def test_get_all_permissions(
+    permission_service: PermissionService,
+    mock_permission_repository: AsyncMock,
+    mock_permission: Mock,
+) -> None:
+    # given
+    mock_permission_repository.find_all.return_value = [mock_permission, mock_permission]
+    # when
+    result = await permission_service.get_all_permissions()
+
+    # then
+    assert len(result) == 2
+    assert result[0].id == mock_permission.id
+    assert result[0].title == mock_permission.title
+    assert result[0].description == mock_permission.description
 
 
 async def test_validate_user_access_team_resource(

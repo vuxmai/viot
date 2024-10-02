@@ -1,6 +1,8 @@
 import re
 from enum import StrEnum
 
+from .permission import TeamProfilePermission, TeamRolePermission
+
 
 class ViotUserRole(StrEnum):
     ADMIN = "Admin"
@@ -27,3 +29,18 @@ REFRESH_TOKEN_SECURE = True
 # Email verification token constants
 EMAIL_VERIFICATION_DURATION_SEC = 60 * 60 * 24  # 24 hours
 FORGOT_PASSWORD_DURATION_SEC = 60 * 60  # 1 hour
+
+
+# Team role constants
+MAX_ROLES_PER_TEAM = 5
+
+TEAM_ROLE_OWNER = "Owner"
+TEAM_ROLE_OWNER_DESCRIPTION = "Full control and ownership of the team"
+
+# Permission constants
+SENSITIVE_SCOPES = {
+    TeamProfilePermission.MANAGE.scope,
+    TeamProfilePermission.DELETE.scope,
+    TeamRolePermission.MANAGE.scope,
+    TeamRolePermission.DELETE.scope,
+}

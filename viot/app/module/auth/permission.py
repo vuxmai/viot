@@ -71,3 +71,19 @@ class TeamDevicePermission:
     DELETE = Permission(
         f"{_PREFIX}:delete", "Delete device", "Permission to delete a device from a team."
     )
+
+
+class TeamRolePermission:
+    """
+    Permissions for team roles.
+    """
+
+    _PREFIX = "team:roles"
+
+    READ = Permission(f"{_PREFIX}:read", "Read roles", "Permission to read the roles of a team.")
+    MANAGE = Permission(
+        f"{_PREFIX}:manage", "Manage roles", "Permission to manage the roles of a team."
+    )
+    DELETE = Permission(
+        f"{_PREFIX}:delete", "Delete role", "Permission to delete a role from a team."
+    )

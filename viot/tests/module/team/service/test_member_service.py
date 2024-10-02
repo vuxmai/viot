@@ -5,10 +5,10 @@ from uuid import uuid4
 import pytest
 
 from app.database.repository.pagination import Page
+from app.module.auth.constants import TEAM_ROLE_OWNER
 from app.module.auth.exception.role_exception import RoleIdNotFoundException
 from app.module.auth.exception.user_exception import UserNotFoundException
 from app.module.auth.repository.user_repository import TeamMember
-from app.module.team.constants import TEAM_ROLE_OWNER
 from app.module.team.dto.member_dto import MemberUpdateDto
 from app.module.team.exception.member_exception import AssignSensitiveRoleException
 from app.module.team.service.member_service import MemberService

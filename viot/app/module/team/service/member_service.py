@@ -4,6 +4,7 @@ from injector import inject
 
 from app.database.repository import Pageable, Sort
 from app.database.repository.pagination import SortDirection
+from app.module.auth.constants import TEAM_ROLE_OWNER
 from app.module.auth.exception.role_exception import RoleIdNotFoundException
 from app.module.auth.exception.user_exception import UserNotFoundException
 from app.module.auth.model.user_team_role import UserTeamRole
@@ -12,7 +13,6 @@ from app.module.auth.repository.user_repository import TeamMember, UserRepositor
 from app.module.auth.repository.user_team_role_repository import UserTeamRoleRepository
 from app.module.team.exception.member_exception import AssignSensitiveRoleException
 
-from ..constants import TEAM_ROLE_OWNER
 from ..dto.member_dto import MemberDto, MemberPagingDto, MemberUpdateDto
 
 

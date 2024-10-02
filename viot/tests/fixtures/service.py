@@ -5,13 +5,11 @@ import pytest
 from app.module.auth.repository.password_reset_repository import PasswordResetRepository
 from app.module.auth.repository.permission_repository import PermissionRepository
 from app.module.auth.repository.refresh_token_repository import RefreshTokenRepository
-from app.module.auth.repository.role_permission_repository import RolePermissionRepository
 from app.module.auth.repository.role_repository import RoleRepository
 from app.module.auth.repository.user_repository import UserRepository
 from app.module.auth.repository.user_team_role_repository import UserTeamRoleRepository
 from app.module.auth.service.auth_service import AuthService
 from app.module.auth.service.password_reset_service import PasswordResetService
-from app.module.auth.service.team_role_service import TeamRoleService
 from app.module.auth.service.token_service import TokenService
 from app.module.auth.service.user_service import UserService
 from app.module.email.service import IEmailService
@@ -69,19 +67,6 @@ def token_service(
 @pytest.fixture
 def user_service(mock_user_repository: UserRepository) -> UserService:
     return UserService(user_repository=mock_user_repository)
-
-
-@pytest.fixture
-def team_role_service(
-    mock_role_repository: RoleRepository,
-    mock_role_permission_repository: RolePermissionRepository,
-    mock_permission_repository: PermissionRepository,
-) -> TeamRoleService:
-    return TeamRoleService(
-        role_repository=mock_role_repository,
-        role_permission_repository=mock_role_permission_repository,
-        permission_repository=mock_permission_repository,
-    )
 
 
 @pytest.fixture

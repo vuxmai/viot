@@ -9,3 +9,5 @@ class Permission(Base):
 
     id: Mapped[int] = mapped_column(init=False, autoincrement=True, primary_key=True)
     scope: Mapped[str] = mapped_column(TEXT, unique=True, index=True)
+    title: Mapped[str] = mapped_column(TEXT)
+    description: Mapped[str | None] = mapped_column(TEXT)

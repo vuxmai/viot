@@ -5,8 +5,8 @@ from pydantic import EmailStr, field_validator
 
 from app.common.dto import BaseInDto, BaseOutDto, PagingDto
 from app.database.repository import Page
+from app.module.auth.constants import TEAM_ROLE_OWNER
 
-from ..constants import TEAM_ROLE_OWNER
 from ..model.team_invitation import TeamInvitation
 
 

@@ -33,12 +33,12 @@ from app.module.auth.permission import (
 
 # revision identifiers, used by Alembic.
 revision: str = "d311bfe58214"
-down_revision: str | None = "851c84f685bc"
+down_revision: str | None = "91bb264f3ba7"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 permissions = [
-    Permission(scope=p.scope)
+    Permission(scope=p.scope, title=p.title, description=p.description)
     for p in [
         # Team Profile
         TeamProfilePermission.READ,

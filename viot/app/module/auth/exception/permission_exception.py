@@ -1,4 +1,4 @@
-from app.common.exception import NotFoundException, PermissionDeniedException
+from app.common.exception import BadRequestException, NotFoundException, PermissionDeniedException
 
 
 class ResourceAccessDeniedException(PermissionDeniedException):
@@ -15,4 +15,12 @@ class PermissionsNotFoundException(NotFoundException):
         super().__init__(
             code="PERMISSION_NOT_FOUND",
             message=f"Permissions not found for the following scope(s): {formatted_scopes}",
+        )
+
+
+class UpdateSensitiveScopeException(BadRequestException):
+    def __init__(self) -> None:
+        super().__init__(
+            code="UPDATE_SENSITIVE_SCOPE",
+            message="You are not allowed to update sensitive scopes",
         )
