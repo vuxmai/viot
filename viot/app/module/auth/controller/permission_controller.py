@@ -15,7 +15,9 @@ class PermissionController(Controller):
     @inject
     def __init__(self, permission_service: PermissionService) -> None:
         super().__init__(
-            prefix="/teams/permissions", tags=["Team Permissions"], dependencies=[DependSession]
+            prefix="/teams/{team_id}/permissions",
+            tags=["Team Permissions"],
+            dependencies=[DependSession],
         )
         self._permission_service = permission_service
 
