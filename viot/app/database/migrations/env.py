@@ -48,8 +48,20 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
+def exclude_by_name(name, type_, parent_names):  # type: ignore
+    exclude_indexes = ["device_data_ts_idx"]
+    if type_ == "index":
+        return name not in exclude_indexes
+    else:
+        return True
+
+
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        include_name=exclude_by_name,  # type: ignore
+    )
 
     with context.begin_transaction():
         context.run_migrations()
