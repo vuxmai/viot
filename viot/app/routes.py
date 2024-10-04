@@ -7,6 +7,7 @@ from app.module.auth.controller.permission_controller import PermissionControlle
 from app.module.auth.controller.team_role_controller import TeamRoleController
 from app.module.auth.controller.user_controller import UserController
 from app.module.device.controller.device_controller import DeviceController
+from app.module.device_data.controller.device_data_controller import DeviceDataController
 from app.module.team.controller.member_controller import MemberController
 from app.module.team.controller.team_controller import TeamController
 from app.module.team.controller.team_invitation_controller import TeamInvitationController
@@ -22,6 +23,7 @@ api_router.include_router(injector.get(PermissionController).router)
 api_router.include_router(injector.get(TeamInvitationController).router)
 api_router.include_router(injector.get(MemberController).router)
 api_router.include_router(injector.get(DeviceController).router)
+api_router.include_router(injector.get(DeviceDataController).router)
 
 router = APIRouter()
 router.include_router(authenticate_router)
