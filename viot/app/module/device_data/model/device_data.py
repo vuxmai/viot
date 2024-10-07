@@ -25,11 +25,11 @@ class DeviceData(Base):
     )
     ts: Mapped[datetime] = mapped_column(DateTime(timezone=True), primary_key=True)
     key: Mapped[str] = mapped_column(TEXT, primary_key=True)
-    bool_v: Mapped[bool | None] = mapped_column(BOOLEAN)
-    str_v: Mapped[str | None] = mapped_column(TEXT)
-    long_v: Mapped[int | None] = mapped_column(BIGINT)
-    double_v: Mapped[float | None] = mapped_column(DOUBLE_PRECISION)
-    json_v: Mapped[dict[str, Any] | None] = mapped_column(JSON(none_as_null=True))
+    bool_v: Mapped[bool | None] = mapped_column(BOOLEAN, default=None)
+    str_v: Mapped[str | None] = mapped_column(TEXT, default=None)
+    long_v: Mapped[int | None] = mapped_column(BIGINT, default=None)
+    double_v: Mapped[float | None] = mapped_column(DOUBLE_PRECISION, default=None)
+    json_v: Mapped[dict[str, Any] | None] = mapped_column(JSON(none_as_null=True), default=None)
 
     __table_args__ = (Index("device_data_device_id_ts_key_idx", "device_id", "ts", "key"),)
 

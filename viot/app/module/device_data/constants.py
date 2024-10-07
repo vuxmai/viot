@@ -32,8 +32,7 @@ class AggregationType(StrEnum):
 class IntervalType(StrEnum):
     """Interval type
 
-    SECOND = second
-    MINUTE = minute
+    MILLISECOND = millisecond
     HOUR = hour
     DAY = day
     WEEK = week
@@ -41,10 +40,20 @@ class IntervalType(StrEnum):
     YEAR = year
     """
 
-    SECOND = "second"
-    MINUTE = "minute"
+    MILLISECOND = "millisecond"
     HOUR = "hour"
     DAY = "day"
     WEEK = "week"
     MONTH = "month"
     YEAR = "year"
+
+
+class Timezone(StrEnum):
+    """
+    Timezone represents a timezone string.
+    """
+
+    UTC = "UTC"
+    VIETNAM = "Asia/Ho_Chi_Minh"
+    SINGAPORE = "Asia/Singapore"
+    NEW_YORK = "America/New_York"
