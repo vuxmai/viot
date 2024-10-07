@@ -69,16 +69,17 @@ class AggregatedDataMapper:
     @staticmethod
     def map_from_count_rows(rows: Sequence[Row[Any]]) -> list[AggregatedData]:
         data: list[AggregatedData] = []
+        total_count: int = 0
 
         for row in rows:
             if row.count_bool_value != 0:
-                total_count: int = row.count_bool_value
+                total_count = row.count_bool_value
             elif row.count_str_value != 0:
-                total_count: int = row.count_str_value
+                total_count = row.count_str_value
             elif row.count_json_value != 0:
-                total_count: int = row.count_json_value
+                total_count = row.count_json_value
             else:
-                total_count: int = row.count_long_value + row.count_double_value
+                total_count = row.count_long_value + row.count_double_value
 
             data.append(AggregatedData(ts=row.bucket + row.interval / 2, value=total_count))
 

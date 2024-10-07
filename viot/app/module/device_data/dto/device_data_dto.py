@@ -1,4 +1,3 @@
-import re
 from datetime import datetime, timedelta
 from typing import Annotated, Any, NamedTuple, Self
 
@@ -15,8 +14,7 @@ from ..model.device_data_latest import DeviceDataLatest
 
 
 def keys_comma_separated_values(value: str) -> set[str]:
-    result = re.split(r"\s*,\s*", value)
-    result = {item for item in result if item}
+    result = {item.strip() for item in value.split(",") if item.strip()}
     if not result:
         raise ValueError("At least one key is required")
     return result
@@ -101,12 +99,12 @@ class TimeseriesAggregationQueryDto(BaseInDto):
         description="Sort order. asc (ascending) or desc (descending).",
     )
 
-    @computed_field
+    @computed_field  # type: ignore
     @property
     def keys(self) -> set[str]:
         return keys_comma_separated_values(self.keys__)
 
-    @computed_field
+    @computed_field  # type: ignore
     @property
     def interval_in_timedelta(self) -> timedelta:
         if self.interval_type is None or self.interval == 0:
@@ -127,7 +125,7 @@ class TimeseriesAggregationQueryDto(BaseInDto):
         else:
             raise ValueError("Invalid interval type")
 
-    @computed_field
+    @computed_field  # type: ignore
     @property
     def is_aggregate_query(self) -> bool:
         return self.interval > 0 and self.interval_type is not None and self.agg is not None

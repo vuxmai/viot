@@ -60,8 +60,8 @@ class DeviceDataService:
             for i in data:
                 result_map[i.key].append(DataPointDto.from_model(i))
         else:
-            data = await self.find_aggregation_async(device_id, query_dto)
-            for key, values in data.items():
+            aggregated_data = await self.find_aggregation_async(device_id, query_dto)
+            for key, values in aggregated_data.items():
                 result_map[key].extend([DataPointDto.from_model(v) for v in values])
 
         return result_map
