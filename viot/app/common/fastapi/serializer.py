@@ -1,13 +1,14 @@
-from collections.abc import Mapping, Sequence
-from typing import Generic, TypeVar
+from collections.abc import Mapping
+from typing import Any, Generic, TypeVar
 
 import msgspec
 from fastapi import Response
+from fastapi.encoders import jsonable_encoder
 from starlette.background import BackgroundTask
 
 from app.common.dto import BaseOutDto
 
-T = TypeVar("T", bound=BaseOutDto | Sequence[BaseOutDto] | None)
+T = TypeVar("T", bound=BaseOutDto | Any | None)
 
 
 class JSONResponse(Response, Generic[T]):
@@ -29,10 +30,10 @@ class JSONResponse(Response, Generic[T]):
     def render(self, content: T) -> bytes:
         if content is None:
             return b""
-        elif isinstance(content, BaseOutDto):
-            return msgspec.json.encode(content.model_dump(by_alias=True))  # type: ignore
+        elif isinstance(content, BaseOutDto):  # type: ignore
+            return msgspec.json.encode(content.model_dump(by_alias=True))
         else:
-            return msgspec.json.encode([item.model_dump(by_alias=True) for item in content])  # type: ignore
+            return msgspec.json.encode(jsonable_encoder(content))  # type: ignore
 
     @classmethod
     def no_content(

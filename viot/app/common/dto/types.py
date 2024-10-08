@@ -3,6 +3,8 @@ from typing import Annotated
 from fastapi import Query
 from pydantic import StringConstraints
 
+from app.database.repository.pagination import SortDirection
+
 NameStr = Annotated[
     str,
     StringConstraints(pattern=r"^[a-zA-Z ]+$", strip_whitespace=True, min_length=2, max_length=20),
@@ -32,4 +34,13 @@ PageQuery = Annotated[
 PageSizeQuery = Annotated[
     int,
     Query(ge=1, le=50, alias="pageSize", description="Maximum amount of entities in one page"),
+]
+
+# Sorting
+OrderByQuery = Annotated[
+    SortDirection,
+    Query(
+        alias="orderBy",
+        description="Sort order. asc (ascending) or desc (descending).",
+    ),
 ]

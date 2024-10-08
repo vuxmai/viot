@@ -87,3 +87,34 @@ class TeamRolePermission:
     DELETE = Permission(
         f"{_PREFIX}:delete", "Delete role", "Permission to delete a role from a team."
     )
+
+
+class TeamDeviceDataPermission:
+    """
+    Permissions for team device data.
+    """
+
+    _PREFIX = "team:device_data"
+
+    READ = Permission(
+        f"{_PREFIX}:read", "Read device data", "Permission to read the data of a device."
+    )
+
+
+class TeamDeviceConnectLogPermission:
+    """
+    Permissions for team device connect logs.
+    """
+
+    _PREFIX = "team:device_connect_logs"
+
+    READ = Permission(
+        f"{_PREFIX}:read",
+        "Read device connect logs",
+        "Permission to read the connect logs of a device.",
+    )
+    DELETE = Permission(
+        f"{_PREFIX}:delete",
+        "Delete device connect log",
+        "Permission to delete a connect log of a device.",
+    )

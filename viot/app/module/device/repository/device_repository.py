@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, exists, select
 
 from app.database.repository import PageableRepository
 
@@ -15,3 +15,7 @@ class DeviceRepository(PageableRepository[Device, UUID]):
     async def delete_by_device_id_and_team_id(self, device_id: UUID, team_id: UUID) -> None:
         stmt = delete(Device).where(Device.id == device_id, Device.team_id == team_id)
         await self.session.execute(stmt)
+
+    async def exists_by_id_and_team_id(self, device_id: UUID, team_id: UUID) -> bool:
+        stmt = select(exists().where(Device.id == device_id, Device.team_id == team_id))
+        return (await self.session.execute(stmt)).scalar() or False
