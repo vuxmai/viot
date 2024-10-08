@@ -1,10 +1,12 @@
 from injector import Binder, Module, SingletonScope
 
+from .controller.connect_log_controller import ConnectLogController
 from .controller.device_data_controller import DeviceDataController
 from .repository.device_attribute_repository import DeviceAttributeRepository
 from .repository.device_data_aggregation_repository import DeviceDataAggregationRepository
 from .repository.device_data_latest_repository import DeviceDataLatestRepository
 from .repository.device_data_repository import DeviceDataRepository
+from .service.connect_log_service import ConnectLogService
 from .service.device_attribute_service import DeviceAttributeService
 from .service.device_data_service import DeviceDataService
 
@@ -22,5 +24,7 @@ class DeviceDataModule(Module):
 
         binder.bind(DeviceDataService, to=DeviceDataService, scope=SingletonScope)
         binder.bind(DeviceAttributeService, to=DeviceAttributeService, scope=SingletonScope)
+        binder.bind(ConnectLogService, to=ConnectLogService, scope=SingletonScope)
 
         binder.bind(DeviceDataController, to=DeviceDataController, scope=SingletonScope)
+        binder.bind(ConnectLogController, to=ConnectLogController, scope=SingletonScope)

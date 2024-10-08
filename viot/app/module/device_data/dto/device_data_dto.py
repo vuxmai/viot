@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Annotated, Any, NamedTuple, Self
 
-from fastapi import Depends, Query
+from fastapi import Depends
 from pydantic import Field, computed_field, field_validator, model_validator
 
 from app.common.dto import BaseOutDto
@@ -18,32 +18,6 @@ def keys_comma_separated_values(value: str) -> set[str]:
     if not result:
         raise ValueError("At least one key is required")
     return result
-
-
-def start_date_value(
-    value: datetime = Query(
-        alias="startDate",
-        description=(
-            "A string value representing the start date in ISO format,"
-            " any timezone will be removed."
-        ),
-        examples=["2021-01-01T00:00:00"],
-    ),
-) -> datetime:
-    return value.replace(tzinfo=None)
-
-
-def end_date_value(
-    value: datetime = Query(
-        alias="endDate",
-        description=(
-            "A string value representing the end date in ISO format,"
-            " any timezone will be removed."
-        ),
-        examples=["2022-01-01T00:00:00"],
-    ),
-) -> datetime:
-    return value.replace(tzinfo=None)
 
 
 KeySetQuery = Annotated[set[str], Depends(keys_comma_separated_values)]

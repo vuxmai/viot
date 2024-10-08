@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock
 
 import pytest
+from pytest import approx  # type: ignore
 
 from app.module.device_data.dto.device_data_dto import AggregatedData
 from app.module.device_data.mapper import AggregatedDataMapper
@@ -28,7 +29,7 @@ def test_map_from_avg_rows(mock_sample_row: Mock) -> None:
     assert len(result) == 1
     assert isinstance(result[0], AggregatedData)
     assert result[0].ts == datetime(2023, 1, 1, 0, 30)
-    assert result[0].value == 15.5 / 3
+    assert result[0].value == approx(15.5 / 3)
 
 
 def test_map_from_avg_rows_total_count_zero(mock_sample_row: Mock) -> None:
@@ -39,7 +40,7 @@ def test_map_from_avg_rows_total_count_zero(mock_sample_row: Mock) -> None:
     assert len(result) == 1
     assert isinstance(result[0], AggregatedData)
     assert result[0].ts == datetime(2023, 1, 1, 0, 30)
-    assert result[0].value == 0.0
+    assert result[0].value == approx(0.0)
 
 
 def test_map_from_sum_rows(mock_sample_row: Mock) -> None:
@@ -48,7 +49,7 @@ def test_map_from_sum_rows(mock_sample_row: Mock) -> None:
     assert len(result) == 1
     assert isinstance(result[0], AggregatedData)
     assert result[0].ts == datetime(2023, 1, 1, 0, 30)
-    assert result[0].value == 15.5
+    assert result[0].value == approx(15.5)
 
 
 def test_map_from_min_rows(mock_sample_row: Mock) -> None:
@@ -57,7 +58,7 @@ def test_map_from_min_rows(mock_sample_row: Mock) -> None:
     assert len(result) == 1
     assert isinstance(result[0], AggregatedData)
     assert result[0].ts == datetime(2023, 1, 1, 0, 30)
-    assert result[0].value == 5.5
+    assert result[0].value == approx(5.5)
 
 
 def test_map_from_max_rows(mock_sample_row: Mock) -> None:
