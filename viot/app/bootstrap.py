@@ -53,6 +53,7 @@ def setup_modules() -> None:
     from app.extension.redis.module import RedisModule
     from app.module.auth.module import AuthModule
     from app.module.device.module import DeviceModule
+    from app.module.device_data.module import DeviceDataModule
     from app.module.email.module import EmailModule
     from app.module.team.module import TeamModule
 
@@ -64,6 +65,7 @@ def setup_modules() -> None:
     injector.binder.install(AuthModule)
     injector.binder.install(TeamModule)
     injector.binder.install(DeviceModule)
+    injector.binder.install(DeviceDataModule)
 
 
 def register_middleware(app: FastAPI) -> None:

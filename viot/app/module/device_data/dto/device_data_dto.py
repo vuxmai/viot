@@ -27,7 +27,7 @@ def start_date_value(
             "A string value representing the start date in ISO format,"
             " any timezone will be removed."
         ),
-        example="2021-01-01T00:00:00",
+        examples=["2021-01-01T00:00:00"],
     ),
 ) -> datetime:
     return value.replace(tzinfo=None)
@@ -40,7 +40,7 @@ def end_date_value(
             "A string value representing the end date in ISO format,"
             " any timezone will be removed."
         ),
-        example="2022-01-01T00:00:00",
+        examples=["2022-01-01T00:00:00"],
     ),
 ) -> datetime:
     return value.replace(tzinfo=None)
@@ -144,10 +144,6 @@ class TimeseriesAggregationQueryDto(BaseInDto):
     def validate_dto(self) -> Self:
         if self.start_date >= self.end_date:
             raise ValueError("End date must be greater than start date")
-        if self.interval == 0 or self.interval_type is None or self.agg is None:
-            raise ValueError(
-                "When using aggregation, 'interval', 'intervalType', and 'agg' must be provided"
-            )
         return self
 
 

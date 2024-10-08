@@ -12,17 +12,17 @@ class AggregatedDataMapper:
         data: list[AggregatedData] = []
 
         for row in rows:
-            sum: float = 0.0
+            sum_value: float = 0.0
 
             if row.long_value:
-                sum += row.long_value
+                sum_value += row.long_value
             if row.double_value:
-                sum += row.double_value
+                sum_value += row.double_value
 
             total_count: int = row.count_long_value + row.count_double_value
 
             if total_count > 0:
-                avg = sum / total_count
+                avg = sum_value / total_count
             else:
                 avg = 0.0
 
@@ -35,14 +35,14 @@ class AggregatedDataMapper:
         data: list[AggregatedData] = []
 
         for row in rows:
-            sum: float = 0.0
+            sum_value: float = 0.0
 
             if row.long_value:
-                sum += row.long_value
+                sum_value += row.long_value
             if row.double_value:
-                sum += row.double_value
+                sum_value += row.double_value
 
-            data.append(AggregatedData(ts=row.bucket + row.interval / 2, value=sum))
+            data.append(AggregatedData(ts=row.bucket + row.interval / 2, value=sum_value))
 
         return data
 
