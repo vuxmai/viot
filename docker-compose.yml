@@ -112,7 +112,9 @@ services:
       - VIOT_POSTGRES_USER=postgres
       - VIOT_POSTGRES_PASSWORD=postgres
       - VIOT_POSTGRES_DB=postgres
-      - VIOT_JWT_SECRET=secret
+      - VIOT_REDIS_SERVER=redis
+      - VIOT_REDIS_PORT=6379
+      - VIOT_AUTH_JWT_SECRET=secret
       - VIOT_CELERY_REDIS_SERVER=redis
       - VIOT_CELERY_REDIS_PORT=6379
       - VIOT_CELERY_BROKER_REDIS_DATABASE=0
@@ -120,7 +122,7 @@ services:
 
       # https://github.com/testcontainers/testcontainers-python/issues/475#issuecomment-2334343767
       - TESTCONTAINERS_RYUK_DISABLED=true
-    user: root  # Required for pytest with testcontainers
+    user: root # Required for pytest with testcontainers
     volumes:
       - ./viot:/viot
       # Required for pytest with testcontainers
