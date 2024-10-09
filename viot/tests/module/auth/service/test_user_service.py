@@ -1,14 +1,47 @@
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
+from faker import Faker
 
+from app.module.auth.constants import ViotUserRole
 from app.module.auth.dto.user_dto import ChangePasswordDto, UserUpdateDto
 from app.module.auth.exception.user_exception import (
     PasswordNotMatchException,
     UserNotFoundException,
 )
+from app.module.auth.model.user import User
 from app.module.auth.service.user_service import UserService
+from app.module.auth.utils.password_utils import hash_password
+
+
+@pytest.fixture
+def mock_user_repository() -> AsyncMock:
+    return AsyncMock()
+
+
+@pytest.fixture
+def user_service(mock_user_repository: AsyncMock) -> UserService:
+    return UserService(user_repository=mock_user_repository)
+
+
+@pytest.fixture
+def mock_user() -> Mock:
+    user = Mock(spec=User)
+    user.id = uuid4()
+    user.first_name = Faker().first_name()
+    user.last_name = Faker().last_name()
+    user.email = Faker().email()
+    user.email_verified_at = datetime.now()
+    user.raw_password = "!abcABC123"
+    user.password = hash_password("!abcABC123")
+    user.role = ViotUserRole.USER
+    user.disabled = False
+    user.created_at = datetime.now(UTC)
+    user.updated_at = None
+    user.verified = True
+    return user
 
 
 async def test_change_password_correctly(

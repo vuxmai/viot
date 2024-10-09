@@ -23,10 +23,6 @@ from tests.utils.testcontainers import DbContainer, FixedAsyncRedisContainer, Fi
 logging.getLogger("faker").setLevel(logging.ERROR)
 
 pytest_plugins = [
-    "tests.fixtures.mock_model",
-    "tests.fixtures.mock_repository",
-    "tests.fixtures.service",
-    "tests.fixtures.mock_fastapi_depends",
     "tests.fixtures.factories",
 ]
 
