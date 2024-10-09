@@ -11,6 +11,7 @@ You need to add this domain to your local hosts file:
 127.0.0.1 api.viot.local
 127.0.0.1 flower
 127.0.0.1 mailpit
+127.0.0.1 emqx
 ```
 
 ## Pre-commit and code linting

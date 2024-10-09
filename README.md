@@ -34,6 +34,7 @@
     127.0.0.1 api.viot.local
     127.0.0.1 flower
     127.0.0.1 mailpit
+    127.0.0.1 emqx
     ```
 
 3. Go to the project directory and run the following command to start the application:
@@ -51,6 +52,7 @@
 - API: `http://api.viot.local/docs` (Swagger UI)
 - Celery Flower: `http://flower/` (Account login: `admin/admin`)
 - Mailpit: `http://mailpit/` (Account login: `admin/admin`)
+- EMQX: `http://emqx/` (Account login: `admin/admin`)
 
 ## Documentation
 

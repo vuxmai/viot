@@ -21,6 +21,7 @@ This is the backend for the Viot project. It is a FastAPI application that uses 
 - API: `http://api.viot.local/docs` (Swagger UI)
 - Celery Flower: `http://flower/` (Account login: `admin/admin`)
 - Mailpit: `http://mailpit/` (Account login: `admin/admin`)
+- EMQX: `http://emqx/` (Account login: `admin/admin`)
 
 
 ### Local development with Poetry
