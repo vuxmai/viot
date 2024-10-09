@@ -1,6 +1,6 @@
 import logging
 import uuid
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from typing import Any
 
 from injector import inject
@@ -10,8 +10,7 @@ from app.config import app_settings
 from ..constants import REFRESH_TOKEN_DURATION_SEC, REFRESH_TOKEN_SAMESITE, REFRESH_TOKEN_SECURE
 from ..dto.auth_dto import TokenDto
 from ..exception.auth_exception import InvalidCredentialsException
-from ..exception.token_exception import InvalidRefreshTokenException, TokenExpiredException
-from ..model.refresh_token import RefreshToken
+from ..exception.token_exception import InvalidRefreshTokenException
 from ..repository.refresh_token_repository import RefreshTokenRepository
 from ..repository.user_repository import UserRepository
 from ..utils.token_utils import AccessToken, create_access_token
@@ -34,32 +33,15 @@ class TokenService:
 
         # Check if token is expired
         if rf_token_model.expires_at < datetime.now(UTC):
-            raise TokenExpiredException
+            raise InvalidRefreshTokenException
 
         user = await self._user_repository.find(rf_token_model.user_id)
         if not user:
-            raise InvalidCredentialsException
-
-        # Check if the provided refresh token is the latest one
-        latest_token = await self._refresh_token_repository.find_latest_token_by_user_id(user.id)
-        if latest_token != refresh_token:
-            # The provided refresh token is not the latest one
-            # Invalidate all tokens and force user to login again
-            await self._refresh_token_repository.update_all_tokens_expires_at(
-                user_id=user.id, expires_at=datetime.now(UTC)
-            )
-            logger.warning("Provided refresh token is not the latest one. Invalidate all tokens.")
             raise InvalidRefreshTokenException
 
-        refresh_token = (
-            await self._refresh_token_repository.save(
-                RefreshToken(
-                    user_id=user.id,
-                    token=uuid.uuid4().hex,
-                    expires_at=datetime.now(UTC) + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC),
-                )
-            )
-        ).token
+        rf_token_model.token = uuid.uuid4().hex
+
+        refresh_token = (await self._refresh_token_repository.save(rf_token_model)).token
         ac_token, ac_expire_at = create_access_token(access_token=AccessToken(user_id=user.id))
 
         return TokenDto(
