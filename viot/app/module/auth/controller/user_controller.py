@@ -11,7 +11,7 @@ from app.module.team.dto.team_dto import TeamWithRoleDto
 from app.module.team.service.team_service import TeamService
 
 from ..dependency import DependCurrentUser
-from ..dto.user_dto import ChangePasswordDto, UserDto, UserUpdateDto
+from ..dto.user_dto import ChangePasswordDto, UserDto, UserUpdateDto, UserWithTeamsDto
 from ..model.user import User
 from ..service.user_service import UserService
 
@@ -23,18 +23,27 @@ class UserController(Controller):
         self._user_service = user_service
         self._team_service = team_service
 
-    @get("/me", summary="Get current user", status_code=200, responses={200: {"model": UserDto}})
+    @get(
+        "/me",
+        summary="Get current user",
+        status_code=200,
+        responses={200: {"model": UserWithTeamsDto}},
+    )
     async def get_user(
         self, *, current_user: Annotated[User, DependCurrentUser]
-    ) -> JSONResponse[UserDto]:
+    ) -> JSONResponse[UserWithTeamsDto]:
         """Get current user"""
-        return JSONResponse(content=UserDto.model_validate(current_user), status_code=200)
+        teams = await self._team_service.get_teams_with_role_by_user_id(user_id=current_user.id)
+        return JSONResponse(
+            content=UserWithTeamsDto(**current_user.to_dict(), teams=teams), status_code=200
+        )
 
     @get(
         "/me/teams",
         summary="Get current user's teams",
         status_code=200,
         responses={200: {"model": list[TeamWithRoleDto]}},
+        deprecated=True,
     )
     async def get_teams(
         self, *, current_user: Annotated[User, DependCurrentUser]

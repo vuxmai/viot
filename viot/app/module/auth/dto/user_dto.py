@@ -5,6 +5,7 @@ from uuid import UUID
 from pydantic import Field, field_validator, model_validator
 
 from app.common.dto import BaseInDto, BaseOutDto, NameStr, PagingDto
+from app.module.team.dto.team_dto import TeamWithRoleDto
 
 from ..constants import PASSWORD_REGEX_PATTERN, PASSWORD_REGEX_VALIDATION_ERROR_MSG
 from ..model.user import User
@@ -45,6 +46,10 @@ class UserDto(BaseOutDto):
     @classmethod
     def from_model(cls, user: User) -> "UserDto":
         return cls.model_validate(user)
+
+
+class UserWithTeamsDto(UserDto):
+    teams: list[TeamWithRoleDto]
 
 
 class UserPagingDto(PagingDto[UserDto]):
