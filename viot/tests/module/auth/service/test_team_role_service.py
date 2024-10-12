@@ -1,4 +1,3 @@
-from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
 
@@ -16,8 +15,6 @@ from app.module.auth.exception.role_exception import (
     RoleNameExistsInTeamException,
     TeamRoleLimitException,
 )
-from app.module.auth.model.permission import Permission
-from app.module.auth.model.role import Role
 from app.module.auth.repository.role_repository import RoleWithScopes
 from app.module.auth.service.team_role_service import TeamRoleService
 from app.module.team.exception.team_exception import TeamNotFoundException
@@ -56,26 +53,6 @@ def team_role_service(
         permission_repository=mock_permission_repository,
         role_permission_repository=mock_role_permission_repository,
     )
-
-
-@pytest.fixture
-def mock_role() -> Mock:
-    role = Mock(spec=Role)
-    role.id = 1
-    role.name = "test"
-    role.description = "test"
-    role.scopes = {"test"}
-    role.created_at = datetime.now(UTC)
-    role.updated_at = None
-    return role
-
-
-@pytest.fixture
-def mock_permission() -> Mock:
-    permission = Mock(spec=Permission)
-    permission.id = 1
-    permission.scope = "test"
-    return permission
 
 
 async def test_get_roles_by_team_id(

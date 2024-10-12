@@ -24,6 +24,7 @@ logging.getLogger("faker").setLevel(logging.ERROR)
 
 pytest_plugins = [
     "tests.fixtures.factories",
+    "tests.fixtures.models",
 ]
 
 

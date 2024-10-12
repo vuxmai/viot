@@ -14,7 +14,6 @@ from app.module.team.dto.team_invitation_dto import TeamInvitationCreateDto
 from app.module.team.exception.team_exception import TeamNotFoundException
 from app.module.team.exception.team_invitation_exception import TeamInvitationNotFoundException
 from app.module.team.model.team import Team
-from app.module.team.model.team_invitation import TeamInvitation
 from app.module.team.service.team_invitation_service import TeamInvitationService
 
 
@@ -97,19 +96,6 @@ def mock_team(mock_user: Mock) -> Mock:
     team.created_at = datetime.now(UTC)
     team.updated_at = None
     return team
-
-
-@pytest.fixture
-def mock_team_invitation(mock_team: Mock, mock_user: Mock) -> Mock:
-    team_invitation = Mock(spec=TeamInvitation)
-    team_invitation.id = uuid4()
-    team_invitation.team_id = mock_team.id
-    team_invitation.inviter_id = mock_user.id
-    team_invitation.email = Faker().email()
-    team_invitation.role = "Member"
-    team_invitation.token = uuid4().hex
-    team_invitation.created_at = datetime.now(UTC)
-    return team_invitation
 
 
 async def test_get_pageable_team_invitations_correctly_with_empty_list(

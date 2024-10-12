@@ -1,14 +1,12 @@
-from datetime import datetime
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
 
 from app.database.repository.pagination import Page
-from app.module.device.constants import DeviceStatus, DeviceType
+from app.module.device.constants import DeviceType
 from app.module.device.dto.device_dto import DeviceCreateDto
 from app.module.device.exception.device_exception import DeviceNotFoundException
-from app.module.device.model.device import Device
 from app.module.device.service.device_service import DeviceService
 from app.module.team.exception.team_exception import TeamNotFoundException
 
@@ -32,25 +30,6 @@ def device_service(
         device_repository=mock_device_repository,
         team_repository=mock_team_repository,
     )
-
-
-@pytest.fixture
-def mock_device() -> Mock:
-    mock_device = Mock(spec=Device)
-    mock_device.id = uuid4()
-    mock_device.name = "device"
-    mock_device.description = "description"
-    mock_device.device_type = DeviceType.DEVICE
-    mock_device.token = uuid4().hex
-    mock_device.status = DeviceStatus.OFFLINE
-    mock_device.image_url = "image_url"
-    mock_device.disabled = False
-    mock_device.last_connection = None
-    mock_device.meta_data = {}
-    mock_device.team_id = uuid4()
-    mock_device.created_at = datetime.now()
-    mock_device.updated_at = None
-    return mock_device
 
 
 async def test_get_device_by_id_and_team_id(
