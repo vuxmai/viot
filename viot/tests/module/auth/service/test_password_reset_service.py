@@ -1,22 +1,17 @@
 from collections.abc import Generator
 from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, Mock
-from uuid import uuid4
 
 import pytest
-from faker import Faker
 
 from app.common.fastapi.context import request_ctx
-from app.module.auth.constants import FORGOT_PASSWORD_DURATION_SEC, ViotUserRole
+from app.module.auth.constants import FORGOT_PASSWORD_DURATION_SEC
 from app.module.auth.dto.reset_password_dto import ResetPasswordDto
 from app.module.auth.exception.auth_exception import (
     InvalidResetPasswordTokenException,
     ResetPasswordTokenExpiredException,
 )
-from app.module.auth.model.password_reset import PasswordReset
-from app.module.auth.model.user import User
 from app.module.auth.service.password_reset_service import PasswordResetService
-from app.module.auth.utils.password_utils import hash_password
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -52,33 +47,6 @@ def password_reset_service(
         user_repository=mock_user_repository,
         password_reset_repository=mock_password_reset_repository,
     )
-
-
-@pytest.fixture
-def mock_user() -> Mock:
-    user = Mock(spec=User)
-    user.id = uuid4()
-    user.first_name = Faker().first_name()
-    user.last_name = Faker().last_name()
-    user.email = Faker().email()
-    user.email_verified_at = datetime.now()
-    user.raw_password = "!abcABC123"
-    user.password = hash_password("!abcABC123")
-    user.role = ViotUserRole.USER
-    user.disabled = False
-    user.created_at = datetime.now(UTC)
-    user.updated_at = None
-    user.verified = True
-    return user
-
-
-@pytest.fixture
-def mock_password_reset(mock_user: Mock) -> Mock:
-    password_reset = Mock(spec=PasswordReset)
-    password_reset.email = mock_user.email
-    password_reset.token = uuid4().hex
-    password_reset.created_at = datetime.now(UTC)
-    return password_reset
 
 
 async def test_forgot_password_correctly(

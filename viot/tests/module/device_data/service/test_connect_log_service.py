@@ -7,7 +7,6 @@ import pytest
 from app.database.repository import Page
 from app.database.repository.pagination import SortDirection
 from app.module.device.exception.device_exception import DeviceNotFoundException
-from app.module.device_data.model.connect_log import ConnectLog
 from app.module.device_data.service.connect_log_service import ConnectLogService
 
 
@@ -30,17 +29,6 @@ def connect_log_service(
         connect_log_repository=mock_connect_log_repository,
         device_repository=mock_device_repository,
     )
-
-
-@pytest.fixture
-def mock_connect_log() -> Mock:
-    mock = Mock(spec=ConnectLog)
-    mock.device_id = uuid4()
-    mock.ts = datetime.now()
-    mock.ip = "192.168.1.200"
-    mock.connect_status = 0
-    mock.keep_alive = 60
-    return mock
 
 
 async def test_get_connect_logs(

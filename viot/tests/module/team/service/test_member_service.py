@@ -1,17 +1,14 @@
-from datetime import UTC, datetime
+from datetime import datetime
 from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
 
 import pytest
-from faker import Faker
 
 from app.database.repository.pagination import Page
-from app.module.auth.constants import TEAM_ROLE_OWNER, ViotUserRole
+from app.module.auth.constants import TEAM_ROLE_OWNER
 from app.module.auth.exception.role_exception import RoleIdNotFoundException
 from app.module.auth.exception.user_exception import UserNotFoundException
-from app.module.auth.model.user import User
 from app.module.auth.repository.user_repository import TeamMember
-from app.module.auth.utils.password_utils import hash_password
 from app.module.team.dto.member_dto import MemberUpdateDto
 from app.module.team.exception.member_exception import AssignSensitiveRoleException
 from app.module.team.service.member_service import MemberService
@@ -43,24 +40,6 @@ def member_service(
         role_repository=mock_role_repository,
         user_team_role_repository=mock_user_team_role_repository,
     )
-
-
-@pytest.fixture
-def mock_user() -> Mock:
-    user = Mock(spec=User)
-    user.id = uuid4()
-    user.first_name = Faker().first_name()
-    user.last_name = Faker().last_name()
-    user.email = Faker().email()
-    user.email_verified_at = datetime.now()
-    user.raw_password = "!abcABC123"
-    user.password = hash_password("!abcABC123")
-    user.role = ViotUserRole.USER
-    user.disabled = False
-    user.created_at = datetime.now(UTC)
-    user.updated_at = None
-    user.verified = True
-    return user
 
 
 async def test_find_paging_members(

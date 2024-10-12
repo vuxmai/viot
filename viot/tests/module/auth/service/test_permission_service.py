@@ -4,7 +4,6 @@ from uuid import uuid4
 import pytest
 
 from app.module.auth.exception.permission_exception import ResourceAccessDeniedException
-from app.module.auth.model.permission import Permission
 from app.module.auth.service.permission_service import PermissionService
 
 
@@ -23,16 +22,6 @@ def permission_service(
     mock_permission_repository: AsyncMock, mock_user_team_role_repository: AsyncMock
 ) -> PermissionService:
     return PermissionService(mock_permission_repository, mock_user_team_role_repository)
-
-
-@pytest.fixture
-def mock_permission() -> Mock:
-    permission = Mock(spec=Permission)
-    permission.id = 1
-    permission.scope = "test"
-    permission.title = "test"
-    permission.description = "test"
-    return permission
 
 
 async def test_get_all_permissions(

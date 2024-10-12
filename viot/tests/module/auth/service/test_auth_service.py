@@ -1,20 +1,14 @@
-from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, Mock, patch
-from uuid import uuid4
 
 import pytest
-from faker import Faker
 
-from app.module.auth.constants import REFRESH_TOKEN_DURATION_SEC, ViotUserRole
 from app.module.auth.dto.auth_dto import LoginDto, RegisterDto
 from app.module.auth.exception.auth_exception import (
     InvalidCredentialsException,
     InvalidVerifyEmailTokenException,
 )
 from app.module.auth.exception.user_exception import UserEmailAlreadyExistsException
-from app.module.auth.model.user import User
 from app.module.auth.service.auth_service import AuthService
-from app.module.auth.utils.password_utils import hash_password
 
 
 @pytest.fixture
@@ -50,34 +44,6 @@ def auth_service(
         refresh_token_repository=mock_refresh_token_repository,
         password_reset_repository=mock_password_reset_repository,
     )
-
-
-@pytest.fixture
-def mock_user() -> Mock:
-    user = Mock(spec=User)
-    user.id = uuid4()
-    user.first_name = Faker().first_name()
-    user.last_name = Faker().last_name()
-    user.email = Faker().email()
-    user.email_verified_at = datetime.now()
-    user.raw_password = "!abcABC123"
-    user.password = hash_password("!abcABC123")
-    user.role = ViotUserRole.USER
-    user.disabled = False
-    user.created_at = datetime.now(UTC)
-    user.updated_at = None
-    user.verified = True
-    return user
-
-
-@pytest.fixture
-def mock_refresh_token(mock_user: Mock) -> Mock:
-    refresh_token = Mock()
-    refresh_token.id = uuid4()
-    refresh_token.user_id = mock_user.id
-    refresh_token.token = uuid4().hex
-    refresh_token.expires_at = datetime.now(UTC) + timedelta(seconds=REFRESH_TOKEN_DURATION_SEC)
-    return refresh_token
 
 
 async def test_login(
