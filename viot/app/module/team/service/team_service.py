@@ -11,7 +11,7 @@ from app.module.auth.repository.permission_repository import PermissionRepositor
 from app.module.auth.repository.user_team_role_repository import UserTeamRoleRepository
 from app.module.auth.service.team_role_service import TeamRoleService
 
-from ..dto.team_dto import TeamCreateDto, TeamDto, TeamUpdateDto, TeamWithRoleDto
+from ..dto.team_dto import TeamCreateDto, TeamDto, TeamUpdateDto, TeamWithRoleAndPermissionsDto
 from ..exception.team_exception import TeamNotFoundException, TeamSlugAlreadyExistsException
 from ..model.team import Team
 from ..repository.team_repository import TeamRepository
@@ -34,9 +34,16 @@ class TeamService:
         self._permission_repository = permission_repository
         self._user_team_role_repository = user_team_role_repository
 
-    async def get_teams_with_role_by_user_id(self, *, user_id: UUID) -> list[TeamWithRoleDto]:
+    async def get_teams_with_role_by_user_id(
+        self, *, user_id: UUID
+    ) -> list[TeamWithRoleAndPermissionsDto]:
         teams_with_roles = await self._team_repository.find_teams_with_role_by_user_id(user_id)
-        return [TeamWithRoleDto.from_model(row.team, row.role) for row in teams_with_roles]
+        return [
+            TeamWithRoleAndPermissionsDto.from_model(
+                row.team, row.role, permissions=row.permissions
+            )
+            for row in teams_with_roles
+        ]
 
     async def _generate_team_slug(self, *, name: str) -> str:
         slug = slugify(name, separator="-")

@@ -54,15 +54,23 @@ class TeamDto(BaseOutDto):
         return cls.model_validate(team)
 
 
-class TeamWithRoleDto(BaseOutDto):
+class TeamWithRoleAndPermissionsDto(BaseOutDto):
     id: UUID
     name: str
     slug: str
     description: str | None
     role: str
+    permissions: set[str]
 
     @classmethod
-    def from_model(cls, team: Team, role: str) -> "TeamWithRoleDto":
+    def from_model(
+        cls, team: Team, role: str, permissions: set[str]
+    ) -> "TeamWithRoleAndPermissionsDto":
         return cls(
-            id=team.id, name=team.name, slug=team.slug, description=team.description, role=role
+            id=team.id,
+            name=team.name,
+            slug=team.slug,
+            description=team.description,
+            role=role,
+            permissions=permissions,
         )

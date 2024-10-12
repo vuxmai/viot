@@ -7,7 +7,7 @@ from injector import inject
 from app.common.controller import Controller
 from app.common.fastapi.serializer import JSONResponse
 from app.database.dependency import DependSession
-from app.module.team.dto.team_dto import TeamWithRoleDto
+from app.module.team.dto.team_dto import TeamWithRoleAndPermissionsDto
 from app.module.team.service.team_service import TeamService
 
 from ..dependency import DependCurrentUser
@@ -42,12 +42,12 @@ class UserController(Controller):
         "/me/teams",
         summary="Get current user's teams",
         status_code=200,
-        responses={200: {"model": list[TeamWithRoleDto]}},
+        responses={200: {"model": list[TeamWithRoleAndPermissionsDto]}},
         deprecated=True,
     )
     async def get_teams(
         self, *, current_user: Annotated[User, DependCurrentUser]
-    ) -> JSONResponse[list[TeamWithRoleDto]]:
+    ) -> JSONResponse[list[TeamWithRoleAndPermissionsDto]]:
         """Get current user's teams"""
         return JSONResponse(
             content=await self._team_service.get_teams_with_role_by_user_id(
