@@ -1,19 +1,12 @@
-from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
-from uuid import uuid4
 
 import pytest
-from faker import Faker
 
 from app.database.repository import Page
-from app.module.auth.constants import ViotUserRole
 from app.module.auth.exception.user_exception import UserNotFoundException
-from app.module.auth.model.user import User
-from app.module.auth.utils.password_utils import hash_password
 from app.module.team.dto.team_invitation_dto import TeamInvitationCreateDto
 from app.module.team.exception.team_exception import TeamNotFoundException
 from app.module.team.exception.team_invitation_exception import TeamInvitationNotFoundException
-from app.module.team.model.team import Team
 from app.module.team.service.team_invitation_service import TeamInvitationService
 
 
@@ -64,38 +57,6 @@ def team_invitation_service(
         user_team_role_repository=mock_user_team_role_repository,
         role_repository=mock_role_repository,
     )
-
-
-@pytest.fixture
-def mock_user() -> Mock:
-    user = Mock(spec=User)
-    user.id = uuid4()
-    user.first_name = Faker().first_name()
-    user.last_name = Faker().last_name()
-    user.email = Faker().email()
-    user.email_verified_at = datetime.now()
-    user.raw_password = "!abcABC123"
-    user.password = hash_password("!abcABC123")
-    user.role = ViotUserRole.USER
-    user.disabled = False
-    user.created_at = datetime.now(UTC)
-    user.updated_at = None
-    user.verified = True
-    return user
-
-
-@pytest.fixture
-def mock_team(mock_user: Mock) -> Mock:
-    team = Mock(spec=Team)
-    team.id = uuid4()
-    team.owner_id = mock_user.id
-    team.name = Faker().name()
-    team.slug = Faker().slug()
-    team.description = Faker().sentence()
-    team.default = False
-    team.created_at = datetime.now(UTC)
-    team.updated_at = None
-    return team
 
 
 async def test_get_pageable_team_invitations_correctly_with_empty_list(
