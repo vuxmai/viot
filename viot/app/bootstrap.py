@@ -91,4 +91,4 @@ def register_router(app: FastAPI) -> None:
             "version": __version__,
         }
 
-    app.include_router(api_router, prefix=app_settings.API_PREFIX)
+    app.include_router(api_router)
