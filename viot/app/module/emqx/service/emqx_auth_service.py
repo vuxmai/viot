@@ -66,18 +66,7 @@ class EmqxDeviceAuthService:
             return EmqxAuthenResponseDto(
                 result="allow",
                 is_superuser=False,
-                acl=[
-                    # {
-                    #     "permission": "allow",
-                    #     "action": "all",
-                    #     "topic": "eq test/1/#",
-                    # },
-                    # {
-                    #     "permission": "allow",
-                    #     "action": "all",
-                    #     "topic": "test/2/#",
-                    # },
-                ],
+                acl=[],
             )
 
         except (DeviceNotFoundException, DeviceCredentialException, DeviceDisabledException) as e:

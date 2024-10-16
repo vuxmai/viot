@@ -52,9 +52,6 @@ class EmqxEventService:
         ) as client:
             url: str = f"{emqx_settings.API_URL}/clients/{device_id}/subscribe/bulk"
 
-            topics: list[Subscription] = [
-                # Subscription(topic="test/2/xx", qos=0, nl=0, rap=0, rh=0),
-                # Subscription(topic="test/3/xx", qos=0, nl=0, rap=0, rh=0),
-            ]
+            topics: list[Subscription] = []
 
             await client.post(url, json=topics)

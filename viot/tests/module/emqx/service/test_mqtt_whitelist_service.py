@@ -10,18 +10,18 @@ from app.module.emqx.service.mqtt_whitelist_service import MqttWhitelistService
 def mock_valid_whitelist_content() -> str:
     return (
         "123e4567-e89b-12d3-a456-426614174000:token123\n"
-        "123e4567-e89b-12d3-a456-426614174001:token456\n"
+        + "123e4567-e89b-12d3-a456-426614174001:token456\n"
     )
 
 
 @pytest.fixture
 def mock_malformed_whitelist_content() -> str:
-    return "123e4567-e89b-12d3-a456-426614174000:token123\n" "invalid_line_without_colon\n"
+    return "123e4567-e89b-12d3-a456-426614174000:token123\n" + "invalid_line_without_colon\n"
 
 
 @pytest.fixture
 def mock_invalid_uuid_content() -> str:
-    return "invalid-uuid-format:token123\n" "123e4567-e89b-12d3-a456-426614174001:token456\n"
+    return "invalid-uuid-format:token123\n" + "123e4567-e89b-12d3-a456-426614174001:token456\n"
 
 
 def test_load_valid_whitelist(mock_valid_whitelist_content: str) -> None:
