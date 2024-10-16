@@ -38,7 +38,7 @@ def event_loop_policy() -> uvloop.EventLoopPolicy:
 
 @pytest.fixture(scope="session")
 def timescale_container() -> Generator[DbContainer, None, None]:
-    container = FixedPostgresContainer("timescale/timescaledb:latest-pg15", driver="asyncpg")
+    container = FixedPostgresContainer("timescale/timescaledb:latest-pg16", driver="asyncpg")
     yield container.start()
     container.stop()
 
