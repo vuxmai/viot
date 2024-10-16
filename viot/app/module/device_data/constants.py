@@ -6,10 +6,12 @@ class ConnectStatus(IntEnum):
 
     DISCONNECTED = 0
     CONNECTED = 1
+    FAILED = 2
     """
 
     DISCONNECTED = 0
     CONNECTED = 1
+    FAILED = 2
 
 
 class AggregationType(StrEnum):

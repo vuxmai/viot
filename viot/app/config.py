@@ -22,6 +22,7 @@ class AppSettings(BaseSettings):
 
     API_PORT: int = 8000
     API_PREFIX: str = ""
+    API_INTERNAL_PREFIX: str = "/internal"
 
     ALLOW_CREDENTIALS: bool = True
     ALLOW_CORS_ORIGINS: list[AnyHttpUrl | str] = []

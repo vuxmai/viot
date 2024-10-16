@@ -24,12 +24,9 @@ def upgrade() -> None:
     op.create_table(
         "connect_logs",
         sa.Column("device_id", sa.UUID(), nullable=False),
-        sa.Column(
-            "ts", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False
-        ),
+        sa.Column("ts", sa.DateTime(timezone=True), nullable=False),
         sa.Column("connect_status", sa.SMALLINT(), nullable=False),
         sa.Column("ip", sa.TEXT(), nullable=False),
-        sa.Column("keep_alive", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["device_id"], ["devices.id"], onupdate="CASCADE", ondelete="CASCADE"
         ),

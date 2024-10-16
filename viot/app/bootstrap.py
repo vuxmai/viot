@@ -55,6 +55,7 @@ def setup_modules() -> None:
     from app.module.device.module import DeviceModule
     from app.module.device_data.module import DeviceDataModule
     from app.module.email.module import EmailModule
+    from app.module.emqx.module import EmqxModule
     from app.module.team.module import TeamModule
 
     injector.binder.install(DatabaseModule)
@@ -66,6 +67,7 @@ def setup_modules() -> None:
     injector.binder.install(TeamModule)
     injector.binder.install(DeviceModule)
     injector.binder.install(DeviceDataModule)
+    injector.binder.install(EmqxModule)
 
 
 def register_middleware(app: FastAPI) -> None:
@@ -91,4 +93,4 @@ def register_router(app: FastAPI) -> None:
             "version": __version__,
         }
 
-    app.include_router(api_router, prefix=app_settings.API_PREFIX)
+    app.include_router(api_router)

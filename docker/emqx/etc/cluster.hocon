@@ -1,0 +1,139 @@
+actions {
+  http {
+    connected_event {
+      connector = viot_emqx_internal_connector
+      description = ""
+      enable = true
+      parameters {
+        body = """~
+          {
+            "deviceId": "${clientid}"
+          }~"""
+        headers {content-type = "application/json"}
+        max_retries = 2
+        method = post
+        path = "/events/device-connected"
+      }
+      resource_opts {
+        health_check_interval = "15s"
+        inflight_window = 100
+        max_buffer_bytes = "256MB"
+        query_mode = async
+        request_ttl = "45s"
+        worker_pool_size = 16
+      }
+    }
+    disconnected_event {
+      connector = viot_emqx_internal_connector
+      enable = true
+      parameters {
+        body = """~
+          {
+            "deviceId": "${clientid}",
+            "ipAddress": "${ipAddress}",
+            "disconnectedAt": "${disconnectedAt}"
+          }~"""
+        headers {}
+        max_retries = 2
+        method = post
+        path = "/events/device-disconnected"
+      }
+      resource_opts {
+        health_check_interval = "15s"
+        inflight_window = 100
+        max_buffer_bytes = "256MB"
+        query_mode = async
+        request_ttl = "45s"
+        worker_pool_size = 16
+      }
+    }
+  }
+}
+authentication = [
+  {
+    backend = http
+    body {
+      deviceId = "${clientid}"
+      ipAddress = "${peerhost}"
+      password = "${password}"
+      username = "${username}"
+    }
+    connect_timeout = "15s"
+    enable = true
+    enable_pipelining = 100
+    headers {content-type = "application/json", x-request-source = EMQX}
+    mechanism = password_based
+    method = post
+    pool_size = 8
+    request_timeout = "5s"
+    ssl {
+      ciphers = []
+      depth = 10
+      enable = false
+      hibernate_after = "5s"
+      log_level = notice
+      reuse_sessions = true
+      secure_renegotiate = true
+      verify = verify_none
+      versions = [
+        "tlsv1.3",
+        "tlsv1.2"
+      ]
+    }
+    url = "http://viot-api:8000/internal/emqx/auth"
+  }
+]
+connectors {
+  http {
+    viot_emqx_internal_connector {
+      connect_timeout = "15s"
+      description = "Viot API Connector"
+      enable_pipelining = 100
+      headers {X-Request-Source = EMQX, content-type = "application/json"}
+      pool_size = 8
+      pool_type = random
+      resource_opts {
+        health_check_interval = "15s"
+        start_timeout = "5s"
+      }
+      ssl {enable = false, verify = verify_peer}
+      url = "http://viot:8000/internal/emqx"
+    }
+  }
+}
+rule_engine {
+  ignore_sys_message = true
+  jq_function_default_timeout = "10s"
+  rules {
+    device_connected {
+      actions = [
+        "http:connected_event"
+      ]
+      description = ""
+      enable = true
+      metadata {created_at = 1728956081741}
+      name = ""
+      sql = """~
+        SELECT
+          clientid
+        FROM
+          "$events/client_connected"~"""
+    }
+    device_disconnected {
+      actions = [
+        "http:disconnected_event"
+      ]
+      description = ""
+      enable = true
+      metadata {created_at = 1728951968302}
+      name = ""
+      sql = """~
+        SELECT
+          clientid,
+          nth(1, split(peername, ':')) as ipAddress,
+          format_date('millisecond', 'Z', '%Y-%m-%d %H:%M:%S.%3N%:z', disconnected_at) as disconnectedAt
+        FROM
+          "$events/client_disconnected"~"""
+    }
+  }
+}
