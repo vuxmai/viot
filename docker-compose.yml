@@ -37,6 +37,7 @@ services:
       - emqx-data:/opt/emqx/data
       - emqx-log:/opt/emqx/log
       - ./docker/emqx/etc/emqx.conf:/opt/emqx/etc/emqx.conf
+      - ./docker/emqx/etc/acl.conf:/opt/emqx/etc/acl.conf
       - ./docker/emqx/etc/api_keys:/opt/emqx/etc/api_keys
       - ./docker/emqx/etc/cluster.hocon:/opt/emqx/data/configs/cluster.hocon
     environment:
@@ -133,7 +134,7 @@ services:
       # Required for pytest with testcontainers
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
-      # - emqx
+      - emqx
       - redis
       - timescaledb
     networks:
