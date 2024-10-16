@@ -27,7 +27,7 @@ services:
           - nginx
 
   emqx:
-    image: emqx:5.7.2
+    image: emqx:5.8.0
     container_name: emqx
     restart: unless-stopped
     ports:
@@ -37,7 +37,7 @@ services:
       - emqx-data:/opt/emqx/data
       - emqx-log:/opt/emqx/log
       - ./docker/emqx/etc/emqx.conf:/opt/emqx/etc/emqx.conf
-      - ./docker/emqx/etc/api_keys.txt:/opt/emqx/etc/api_keys.txt
+      - ./docker/emqx/etc/api_keys:/opt/emqx/etc/api_keys
     environment:
       - EMQX_HOST=node1.viot
     networks:
@@ -46,7 +46,7 @@ services:
           - node1.viot
 
   timescaledb:
-    image: timescale/timescaledb:latest-pg15
+    image: timescale/timescaledb:latest-pg16
     container_name: timescaledb
     restart: unless-stopped
     ports:
@@ -124,6 +124,7 @@ services:
     user: root # Required for pytest with testcontainers
     volumes:
       - ./viot:/viot
+      - ./docker/viot/mqtt_whitelist:/viot/mqtt_whitelist
       # Required for pytest with testcontainers
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
