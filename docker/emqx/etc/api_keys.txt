@@ -1,2 +1,0 @@
-dev1:dev1:administrator
-dev2:dev2:administrator
