@@ -129,7 +129,6 @@ services:
       - TESTCONTAINERS_RYUK_DISABLED=true
     user: root # Required for pytest with testcontainers
     volumes:
-      - ./docker/viot/mqtt_whitelist:/viot/mqtt_whitelist
       - ./viot:/viot
       # Required for pytest with testcontainers
       - /var/run/docker.sock:/var/run/docker.sock
