@@ -96,6 +96,32 @@ async def test_get_teams_with_role_by_user_id_when_get_3_teams(
     assert result[2].description == mock_team.description
 
 
+async def test_check_team_exists_by_id(
+    team_service: TeamService, mock_team_repository: AsyncMock
+) -> None:
+    # given
+    team_id = uuid4()
+    mock_team_repository.exists_by_id.return_value = True
+
+    # when
+    await team_service.check_team_exists_by_id(team_id=team_id)
+
+    # then
+    mock_team_repository.exists_by_id.assert_called_once_with(team_id)
+
+
+async def test_check_team_exists_by_id_raise_team_not_found(
+    team_service: TeamService, mock_team_repository: AsyncMock
+) -> None:
+    # given
+    team_id = uuid4()
+    mock_team_repository.exists_by_id.return_value = False
+
+    # when
+    with pytest.raises(TeamNotFoundException):
+        await team_service.check_team_exists_by_id(team_id=team_id)
+
+
 async def test_generate_team_slug_correctly_when_unique_slug(
     team_service: TeamService, mock_team_repository: AsyncMock
 ) -> None:
