@@ -117,8 +117,8 @@ services:
       - VIOT_REDIS_PORT=6379
       - VIOT_AUTH_JWT_SECRET=secret
       - VIOT_EMQX_API_URL=http://node1.viot:18083/api/v5
-      - VIOT_EMQX_API_KEY=dev1
-      - VIOT_EMQX_SECRET_KEY=dev1
+      - VIOT_EMQX_API_KEY=ABC1234
+      - VIOT_EMQX_SECRET_KEY=ec7122ff-c6c6-4b6b-91eb-5593d7b09437
       - VIOT_EMQX_MQTT_WHITELIST_FILE_PATH=./mqtt_whitelist
       - VIOT_CELERY_REDIS_SERVER=redis
       - VIOT_CELERY_REDIS_PORT=6379
