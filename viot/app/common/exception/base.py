@@ -5,7 +5,7 @@ class ViotException(Exception):
     pass
 
 
-class ViotHttpException(ViotException):
+class InternalServerException(ViotException):
     STATUS_CODE = 500
 
     def __init__(
@@ -20,7 +20,7 @@ class ViotHttpException(ViotException):
         super().__init__(message)
 
 
-class BadRequestException(ViotHttpException):
+class BadRequestException(InternalServerException):
     STATUS_CODE = 400
 
     def __init__(
@@ -29,7 +29,7 @@ class BadRequestException(ViotHttpException):
         super().__init__(code=code, message=message)
 
 
-class UnauthorizedException(ViotHttpException):
+class UnauthorizedException(InternalServerException):
     STATUS_CODE = 401
 
     def __init__(
@@ -42,7 +42,7 @@ class UnauthorizedException(ViotHttpException):
         )
 
 
-class PermissionDeniedException(ViotHttpException):
+class PermissionDeniedException(InternalServerException):
     STATUS_CODE = 403
 
     def __init__(
@@ -51,7 +51,7 @@ class PermissionDeniedException(ViotHttpException):
         super().__init__(code=code, message=message)
 
 
-class NotFoundException(ViotHttpException):
+class NotFoundException(InternalServerException):
     STATUS_CODE = 404
 
     def __init__(
