@@ -46,9 +46,8 @@ class BaseRuleDto(BaseInDto):
 
     @field_validator("condition", mode="before")
     def validate_condition(cls, value: ConditionLogic | Condition) -> ConditionLogic | Condition:
-        if isinstance(value, ConditionLogic):
-            if len(value.conditions) < 2:
-                raise ValueError("Condition logic must contain at least two sub-conditions.")
+        if isinstance(value, ConditionLogic) and len(value.conditions) < 2:
+            raise ValueError("Condition logic must contain at least two sub-conditions.")
         return value
 
 

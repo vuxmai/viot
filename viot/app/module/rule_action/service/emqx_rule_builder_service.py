@@ -2,11 +2,8 @@ from uuid import UUID
 
 from ..constants import (
     MQTT_CONNECTED_EVENT_TOPIC,
-    # MQTT_DEVICE_ATTRIBUTES_TOPIC,
     MQTT_DEVICE_DATA_TOPIC,
     MQTT_DISCONNECTED_EVENT_TOPIC,
-    # MQTT_PRIVATE_TRIGGER_TOPIC,
-    # MQTT_SUB_DEVICE_ATTRIBUTES_TOPIC,
     MQTT_SUB_DEVICE_DATA_TOPIC,
     SUB_DEVICE_KEY,
     EventType,
@@ -18,14 +15,10 @@ MQTT_TOPIC_MAP: dict[EventType, str] = {
     EventType.CONNECTED_EVENT: MQTT_CONNECTED_EVENT_TOPIC,
     EventType.DISCONNECTED_EVENT: MQTT_DISCONNECTED_EVENT_TOPIC,
     EventType.DATA_EVENT: MQTT_DEVICE_DATA_TOPIC,
-    # EventType.ATTRIBUTES_EVENT: MQTT_DEVICE_ATTRIBUTES_TOPIC,
 }
 
 
 class EmqxRuleBuilderService:
-    def __init__(self) -> None:
-        pass
-
     def build_sql(
         self,
         device_id: UUID,
