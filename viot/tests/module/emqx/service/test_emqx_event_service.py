@@ -1,10 +1,10 @@
 from datetime import UTC, datetime
-from unittest import mock
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 from uuid import uuid4
 
 import pytest
 
+from app.common.exception.base import InternalServerException
 from app.module.emqx.config import emqx_settings
 from app.module.emqx.dto.emqx_event_dto import DeviceConnectedEventDto, DeviceDisconnectedEventDto
 from app.module.emqx.service.emqx_event_service import EmqxEventService
@@ -50,16 +50,33 @@ async def test_handle_device_disconnected(
     mock_connect_log_repository.save.assert_awaited_once()
 
 
-async def test_subscribe_device_topics(emqx_event_service: EmqxEventService) -> None:
+@patch("app.module.emqx.service.emqx_event_service.AsyncClient")
+async def test_subscribe_device_topics(mock_async_client: AsyncMock) -> None:
+    # given
+    emqx_event_service = EmqxEventService(connect_log_repository=AsyncMock())
     device_id = uuid4()
+    mock_response = mock_async_client.return_value.__aenter__.return_value.post.return_value
+    mock_response.status_code = 201
 
-    # Mocking AsyncClient and its post method
-    with mock.patch("app.module.emqx.service.emqx_event_service.AsyncClient") as mock_client:
-        mock_instance = mock_client.return_value.__aenter__.return_value
-        mock_instance.post = AsyncMock()
+    # when
+    await emqx_event_service._subscribe_device_topics(device_id)  # type: ignore
 
+    # then
+    mock_async_client.return_value.__aenter__.return_value.post.assert_awaited_once_with(
+        f"{emqx_settings.API_URL}/clients/{device_id}/subscribe/bulk", json=[]
+    )
+
+
+@patch("app.module.emqx.service.emqx_event_service.AsyncClient")
+async def test_subscribe_device_topics_throws_exception_on_failure(
+    mock_async_client: AsyncMock,
+) -> None:
+    # given
+    emqx_event_service = EmqxEventService(connect_log_repository=AsyncMock())
+    device_id = uuid4()
+    mock_response = mock_async_client.return_value.__aenter__.return_value.post.return_value
+    mock_response.status_code = 500
+
+    # when / then
+    with pytest.raises(InternalServerException, match="Error while subscribing to topics"):
         await emqx_event_service._subscribe_device_topics(device_id)  # type: ignore
-
-        # Check that the post method was called with the correct URL and topics
-        url = f"{emqx_settings.API_URL}/clients/{device_id}/subscribe/bulk"
-        mock_instance.post.assert_awaited_once_with(url, json=[])
