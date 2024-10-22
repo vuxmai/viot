@@ -11,6 +11,7 @@ from app.module.device.controller.device_controller import DeviceController
 from app.module.device_data.controller.connect_log_controller import ConnectLogController
 from app.module.device_data.controller.device_data_controller import DeviceDataController
 from app.module.emqx.controller.emqx_device_controller import EmqxDeviceController
+from app.module.rule_action.controller.rule_controller import RuleController
 from app.module.team.controller.member_controller import MemberController
 from app.module.team.controller.team_controller import TeamController
 from app.module.team.controller.team_invitation_controller import TeamInvitationController
@@ -30,6 +31,7 @@ api_router.include_router(injector.get(MemberController).router)
 api_router.include_router(injector.get(DeviceController).router)
 api_router.include_router(injector.get(ConnectLogController).router)
 api_router.include_router(injector.get(DeviceDataController).router)
+api_router.include_router(injector.get(RuleController).router)
 
 internal_api_router.include_router(injector.get(EmqxDeviceController).router)
 
