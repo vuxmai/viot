@@ -14,6 +14,9 @@ from app.module.auth.utils.password_utils import hash_password
 from app.module.device.constants import DeviceStatus, DeviceType
 from app.module.device.model.device import Device
 from app.module.device_data.model.connect_log import ConnectLog
+from app.module.rule_action.constants import ActionType, EventType
+from app.module.rule_action.model.action import Action
+from app.module.rule_action.model.rule import Rule
 from app.module.team.model.team import Team
 from app.module.team.model.team_invitation import TeamInvitation
 
@@ -131,4 +134,37 @@ def mock_connect_log() -> Mock:
     mock.ip = "192.168.1.200"
     mock.connect_status = 0
     mock.keep_alive = 60
+    return mock
+
+
+@pytest.fixture
+def mock_action() -> Mock:
+    mock = Mock(spec=Action)
+    mock.id = uuid4()
+    mock.name = "action"
+    mock.description = "description"
+    mock.action_type = ActionType.EMAIL
+    mock.config = {}
+    mock.team_id = uuid4()
+    mock.created_at = datetime.now()
+    mock.updated_at = None
+    return mock
+
+
+@pytest.fixture
+def mock_rule(mock_action: Mock) -> Mock:
+    mock = Mock(spec=Rule)
+    mock.id = uuid4()
+    mock.name = "rule"
+    mock.description = "description"
+    mock.enable = True
+    mock.event_type = EventType.DATA_EVENT
+    mock.sql = "sql"
+    mock.topic = "topic"
+    mock.condition = {}
+    mock.device_id = uuid4()
+    mock.team_id = uuid4()
+    mock.actions = [mock_action]
+    mock.created_at = datetime.now()
+    mock.updated_at = None
     return mock
