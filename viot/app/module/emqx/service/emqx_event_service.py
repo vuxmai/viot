@@ -2,9 +2,10 @@ import logging
 from typing import Literal, TypedDict
 from uuid import UUID
 
-from httpx import AsyncClient, BasicAuth
+from httpx import AsyncClient
 from injector import inject
 
+from app.common.exception import InternalServerException
 from app.module.device_data.constants import ConnectStatus
 from app.module.device_data.model.connect_log import ConnectLog
 from app.module.device_data.repository.connect_log_repository import ConnectLogRepository
@@ -47,11 +48,12 @@ class EmqxEventService:
         )
 
     async def _subscribe_device_topics(self, device_id: UUID) -> None:
-        async with AsyncClient(
-            auth=BasicAuth(emqx_settings.API_KEY, emqx_settings.SECRET_KEY)
-        ) as client:
+        async with AsyncClient(auth=emqx_settings.BASIC_AUTH) as client:
             url: str = f"{emqx_settings.API_URL}/clients/{device_id}/subscribe/bulk"
 
             topics: list[Subscription] = []
 
-            await client.post(url, json=topics)
+            result = await client.post(url, json=topics)
+
+            if result.status_code not in (200, 201):
+                raise InternalServerException(message="Error while subscribing to topics")

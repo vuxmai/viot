@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import pytest
 
+from app.module.device.constants import DeviceType
 from app.module.device.exception.device_exception import DeviceNotFoundException
 from app.module.emqx.dto.emqx_auth_dto import EmqxAuthenRequestDto
 from app.module.emqx.exception.emqx_auth_exception import (
@@ -10,6 +11,12 @@ from app.module.emqx.exception.emqx_auth_exception import (
     DeviceDisabledException,
 )
 from app.module.emqx.service.emqx_auth_service import EmqxDeviceAuthService
+from app.module.rule_action.constants import (
+    MQTT_DEVICE_ATTRIBUTES_TOPIC,
+    MQTT_DEVICE_DATA_TOPIC,
+    MQTT_SUB_DEVICE_ATTRIBUTES_TOPIC,
+    MQTT_SUB_DEVICE_DATA_TOPIC,
+)
 
 
 @pytest.fixture
@@ -147,3 +154,47 @@ async def test_authenticate_success(
     assert response.is_superuser is False
 
     mock_connect_log_repository.save.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "device_type, expected_acl",
+    [
+        (
+            DeviceType.DEVICE,
+            [
+                {"permission": "allow", "action": "publish", "topic": MQTT_DEVICE_DATA_TOPIC},
+                {"permission": "allow", "action": "publish", "topic": MQTT_DEVICE_ATTRIBUTES_TOPIC},
+            ],
+        ),
+        (
+            DeviceType.GATEWAY,
+            [
+                {"permission": "allow", "action": "publish", "topic": MQTT_DEVICE_DATA_TOPIC},
+                {"permission": "allow", "action": "publish", "topic": MQTT_DEVICE_ATTRIBUTES_TOPIC},
+                {"permission": "allow", "action": "publish", "topic": MQTT_SUB_DEVICE_DATA_TOPIC},
+                {
+                    "permission": "allow",
+                    "action": "publish",
+                    "topic": MQTT_SUB_DEVICE_ATTRIBUTES_TOPIC,
+                },
+            ],
+        ),
+        (
+            DeviceType.SUB_DEVICE,
+            [
+                {"permission": "allow", "action": "publish", "topic": MQTT_DEVICE_DATA_TOPIC},
+                {"permission": "allow", "action": "publish", "topic": MQTT_DEVICE_ATTRIBUTES_TOPIC},
+            ],
+        ),
+    ],  # type: ignore
+)
+def test__get_device_acl(
+    emqx_device_auth_service: EmqxDeviceAuthService,
+    device_type: DeviceType,
+    expected_acl: list[dict[str, str]],
+) -> None:
+    # When
+    acl = emqx_device_auth_service._get_device_acl(device_type)  # type: ignore
+
+    # Then
+    assert acl == expected_acl

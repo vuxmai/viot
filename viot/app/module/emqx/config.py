@@ -1,5 +1,7 @@
 from functools import lru_cache
 
+from httpx import BasicAuth
+from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,6 +15,11 @@ class EmqxSettings(BaseSettings):
     SECRET_KEY: str
 
     MQTT_WHITELIST_FILE_PATH: str = ""
+
+    @computed_field  # type: ignore
+    @property
+    def BASIC_AUTH(self) -> BasicAuth:
+        return BasicAuth(username=self.API_KEY, password=self.SECRET_KEY)
 
 
 @lru_cache

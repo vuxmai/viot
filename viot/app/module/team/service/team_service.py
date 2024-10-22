@@ -45,6 +45,10 @@ class TeamService:
             for row in teams_with_roles
         ]
 
+    async def check_team_exists_by_id(self, *, team_id: UUID) -> None:
+        if not await self._team_repository.exists_by_id(team_id):
+            raise TeamNotFoundException
+
     async def _generate_team_slug(self, *, name: str) -> str:
         slug = slugify(name, separator="-")
         if await self._team_repository.exists_by_slug(slug):

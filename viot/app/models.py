@@ -10,6 +10,9 @@ from app.module.device_data.model.connect_log import ConnectLog
 from app.module.device_data.model.device_attribute import DeviceAttribute
 from app.module.device_data.model.device_data import DeviceData
 from app.module.device_data.model.device_data_latest import DeviceDataLatest
+from app.module.rule_action.model.action import Action
+from app.module.rule_action.model.rule import Rule
+from app.module.rule_action.model.rule_action import RuleAction
 from app.module.team.model.team import Team
 from app.module.team.model.team_invitation import TeamInvitation
 
@@ -30,4 +33,7 @@ __all__ = [
     "DeviceAttribute",
     "DeviceData",
     "DeviceDataLatest",
+    "Rule",
+    "Action",
+    "RuleAction",
 ]

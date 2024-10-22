@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 
 from app.common.dto import ErrorDto
-from app.common.exception.base import ViotHttpException
+from app.common.exception.base import InternalServerException
 from app.common.exception.constant import MessageError
 from app.common.fastapi.serializer import JSONResponse
 from app.config import app_settings
@@ -18,7 +18,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def handle_request_validation_error(  # type: ignore
         request: Request, exc: RequestValidationError
     ) -> JSONResponse[ErrorDto]:
-        logger.debug(f"Validation error: {exc.errors()}")
+        logger.info(f"Validation error: {exc.errors()}")
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=ErrorDto(
@@ -28,11 +28,11 @@ def register_exception_handlers(app: FastAPI) -> None:
             ),
         )
 
-    @app.exception_handler(ViotHttpException)
+    @app.exception_handler(InternalServerException)
     async def handle_viot_http_exception(  # type: ignore
-        request: Request, exc: ViotHttpException
+        request: Request, exc: InternalServerException
     ) -> JSONResponse[ErrorDto]:
-        logger.debug(f"Viot HTTP exception: {exc.code} - {exc.message}")
+        logger.info(f"HTTP exception: {exc.code} - {exc.message}")
         return JSONResponse(
             status_code=exc.STATUS_CODE,
             content=ErrorDto(

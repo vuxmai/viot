@@ -3,13 +3,19 @@ from datetime import UTC, datetime
 
 from injector import inject
 
-from app.module.device.constants import DeviceStatus
+from app.module.device.constants import DeviceStatus, DeviceType
 from app.module.device.exception.device_exception import DeviceNotFoundException
 from app.module.device.model.device import Device
 from app.module.device.repository.device_repository import DeviceRepository
 from app.module.device_data.constants import ConnectStatus
 from app.module.device_data.model.connect_log import ConnectLog
 from app.module.device_data.repository.connect_log_repository import ConnectLogRepository
+from app.module.rule_action.constants import (
+    MQTT_DEVICE_ATTRIBUTES_TOPIC,
+    MQTT_DEVICE_DATA_TOPIC,
+    MQTT_SUB_DEVICE_ATTRIBUTES_TOPIC,
+    MQTT_SUB_DEVICE_DATA_TOPIC,
+)
 
 from ..dto.emqx_auth_dto import EmqxAuthenRequestDto, EmqxAuthenResponseDto
 from ..exception.emqx_auth_exception import DeviceCredentialException, DeviceDisabledException
@@ -64,12 +70,9 @@ class EmqxDeviceAuthService:
             device.last_connection = last_connection
             device.status = DeviceStatus.ONLINE
             connect_status = ConnectStatus.CONNECTED  # Successful connection
+            device_acl = self._get_device_acl(device.device_type)
 
-            return EmqxAuthenResponseDto(
-                result="allow",
-                is_superuser=False,
-                acl=[],
-            )
+            return EmqxAuthenResponseDto(result="allow", is_superuser=False, acl=device_acl)
 
         except (DeviceNotFoundException, DeviceCredentialException, DeviceDisabledException) as e:
             # Re-raise exception
@@ -88,3 +91,26 @@ class EmqxDeviceAuthService:
                         ip=request_dto.ip_address,
                     )
                 )
+
+    def _get_device_acl(self, device_type: DeviceType) -> list[dict[str, str]]:
+        acls: list[dict[str, str]] = [
+            {"permission": "allow", "action": "publish", "topic": MQTT_DEVICE_DATA_TOPIC},
+            {"permission": "allow", "action": "publish", "topic": MQTT_DEVICE_ATTRIBUTES_TOPIC},
+        ]
+        if device_type == DeviceType.GATEWAY:
+            acls.extend(
+                [
+                    {
+                        "permission": "allow",
+                        "action": "publish",
+                        "topic": MQTT_SUB_DEVICE_DATA_TOPIC,
+                    },
+                    {
+                        "permission": "allow",
+                        "action": "publish",
+                        "topic": MQTT_SUB_DEVICE_ATTRIBUTES_TOPIC,
+                    },
+                ]
+            )
+
+        return acls

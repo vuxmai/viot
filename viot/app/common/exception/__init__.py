@@ -1,5 +1,6 @@
 from .base import (
     BadRequestException,
+    InternalServerException,
     NotFoundException,
     PermissionDeniedException,
     UnauthorizedException,
@@ -12,4 +13,5 @@ __all__ = [
     "PermissionDeniedException",
     "UnauthorizedException",
     "ViotException",
+    "InternalServerException",
 ]

@@ -125,7 +125,9 @@ class Page(msgspec.Struct, Generic[TModel]):
 
 
 class PageableRepository(CrudRepository[TBaseModel, TPrimaryKey]):
-    async def find_all_with_paging(self, pageable: Pageable) -> Page[TBaseModel]:
+    async def find_all_with_paging(
+        self, pageable: Pageable, use_unique: bool = False
+    ) -> Page[TBaseModel]:
         # Base query for selecting items
         base_query = select(self._model)
 
@@ -138,7 +140,11 @@ class PageableRepository(CrudRepository[TBaseModel, TPrimaryKey]):
         )
 
         # Execute queries
-        items = (await self.session.execute(query)).scalars().all()
+        result = await self.session.execute(query)
+        if use_unique:
+            items = result.unique().scalars().all()
+        else:
+            items = result.scalars().all()
         total_items = (await self.session.execute(count_query)).scalar_one()
 
         return Page(
