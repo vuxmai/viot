@@ -39,9 +39,12 @@ services:
       - ./docker/emqx/etc/emqx.conf:/opt/emqx/etc/emqx.conf
       - ./docker/emqx/etc/acl.conf:/opt/emqx/etc/acl.conf
       - ./docker/emqx/etc/api_keys:/opt/emqx/etc/api_keys
-      - ./docker/emqx/etc/cluster.hocon:/opt/emqx/data/configs/cluster.hocon
+      - ./docker/emqx/etc/cluster.hocon:/opt/emqx/etc/cluster.hocon
     environment:
       - EMQX_HOST=node1.viot
+    entrypoint: >
+      sh -c "cp -n /opt/emqx/etc/cluster.hocon /opt/emqx/data/configs/cluster.hocon &&
+            /usr/bin/docker-entrypoint.sh /opt/emqx/bin/emqx foreground"
     networks:
       viot:
         aliases:

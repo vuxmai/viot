@@ -118,3 +118,27 @@ class TeamDeviceConnectLogPermission:
         "Delete device connect log",
         "Permission to delete a connect log of a device.",
     )
+
+
+class TeamRulePermission:
+    """
+    Permissions for team rules.
+    """
+
+    _PREFIX = "team:rules"
+
+    READ = Permission(
+        f"{_PREFIX}:read",
+        "Read rules",
+        "Permission to read rule.",
+    )
+    MANAGE = Permission(
+        f"{_PREFIX}:manage",
+        "Manage rules",
+        "Permission to manage rule.",
+    )
+    DELETE = Permission(
+        f"{_PREFIX}:delete",
+        "Delete rule action",
+        "Permission to delete a rule.",
+    )
