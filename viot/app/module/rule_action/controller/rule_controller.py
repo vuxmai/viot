@@ -10,6 +10,8 @@ from app.common.controller import Controller
 from app.common.dto.types import PageQuery, PageSizeQuery
 from app.common.fastapi.serializer import JSONResponse
 from app.database.dependency import DependSession
+from app.module.auth.dependency import RequireTeamPermission
+from app.module.auth.permission import TeamRulePermission
 
 from ..dto.rule_dto import RuleCreateDto, RulePagingDto, RuleResponseDto, RuleUpdateDto
 from ..service.rule_service import RuleService
@@ -30,6 +32,7 @@ class RuleController(Controller):
         summary="Get paging rules",
         status_code=200,
         responses={200: {"model": RulePagingDto}},
+        dependencies=[RequireTeamPermission(TeamRulePermission.READ)],
     )
     async def get_paging_rules(
         self,
@@ -37,7 +40,7 @@ class RuleController(Controller):
         team_id: Annotated[UUID, Path(...)],
         page: PageQuery,
         page_size: PageSizeQuery,
-        device_id: Annotated[UUID | None, Query(...)] = None,
+        device_id: Annotated[UUID | None, Query(..., description="Filter by device id")] = None,
     ) -> JSONResponse[RulePagingDto]:
         """
         Get paging rules.
@@ -54,6 +57,7 @@ class RuleController(Controller):
         summary="Get rule by id",
         status_code=200,
         responses={200: {"model": RuleResponseDto}},
+        dependencies=[RequireTeamPermission(TeamRulePermission.READ)],
     )
     async def get_rule_by_id(
         self,
@@ -76,6 +80,7 @@ class RuleController(Controller):
         summary="Create a new rule",
         status_code=201,
         responses={201: {"model": RuleResponseDto}},
+        dependencies=[RequireTeamPermission(TeamRulePermission.MANAGE)],
     )
     async def create_rule(
         self,
@@ -96,6 +101,7 @@ class RuleController(Controller):
         summary="Update a rule",
         status_code=200,
         responses={200: {"model": RuleResponseDto}},
+        dependencies=[RequireTeamPermission(TeamRulePermission.MANAGE)],
     )
     async def update_rule(
         self,
@@ -118,6 +124,7 @@ class RuleController(Controller):
         "/{rule_id}",
         summary="Delete a rule",
         status_code=204,
+        dependencies=[RequireTeamPermission(TeamRulePermission.DELETE)],
     )
     async def delete_rule(
         self,
